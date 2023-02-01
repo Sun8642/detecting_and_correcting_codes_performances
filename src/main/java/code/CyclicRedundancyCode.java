@@ -1,3 +1,7 @@
+package code;
+
+import util.BitUtil;
+
 public final class CyclicRedundancyCode {
 
     private CyclicRedundancyCode() {
@@ -14,23 +18,14 @@ public final class CyclicRedundancyCode {
 
     private static int getPolynomialArithmeticModulo2(int dividend, int divisor) {
         int remainder = dividend;
-        int remainderLeftMostSetBit = leftMostSetBit(remainder);
-        int divisorLeftMostSetBit = leftMostSetBit(divisor);
+        int remainderLeftMostSetBit = BitUtil.leftMostSetBit(remainder);
+        int divisorLeftMostSetBit = BitUtil.leftMostSetBit(divisor);
 
         while (remainderLeftMostSetBit >= divisorLeftMostSetBit) {
             remainder = remainder ^ (divisor << (remainderLeftMostSetBit - divisorLeftMostSetBit));
-            remainderLeftMostSetBit = leftMostSetBit(remainder);
+            remainderLeftMostSetBit = BitUtil.leftMostSetBit(remainder);
         }
         return remainder;
-    }
-
-    private static int leftMostSetBit(int number) {
-        int posLeftMostSetBit = 0;
-        while (number > 0) {
-            number = number >> 1;
-            posLeftMostSetBit++;
-        }
-        return posLeftMostSetBit;
     }
 
     public static boolean isCorrupted(String encodedMessage, String generatorPolynomial) {

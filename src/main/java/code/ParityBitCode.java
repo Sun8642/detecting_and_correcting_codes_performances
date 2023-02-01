@@ -1,3 +1,7 @@
+package code;
+
+import util.ProbabilityError;
+
 public final class ParityBitCode {
 
     private ParityBitCode() {

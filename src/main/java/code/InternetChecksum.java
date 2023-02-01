@@ -1,3 +1,5 @@
+package code;
+
 public final class InternetChecksum {
 
     public static final String REGEX_STRING_16_CHARS = "(?<=\\G.{16})";
