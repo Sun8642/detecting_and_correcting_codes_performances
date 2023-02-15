@@ -1,12 +1,12 @@
 package code;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import util.ProbabilityError;
+import util.SyntheticDataGenerator;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ParityBitCode {
-
-    private ParityBitCode() {
-
-    }
 
     public static double getProbabilityOfDetectingError(int N, double p) {
         double probabilityOfDetectingError = 0.d;
@@ -33,5 +33,28 @@ public final class ParityBitCode {
 
     private static boolean isNumberOfOneEven(String message) {
         return message.chars().filter(ch -> ch == '1').count() % 2 == 0;
+    }
+
+    public static double getProbabilityOfSuccess(int iterations, double p, int messageBitSize) {
+        String message = SyntheticDataGenerator.getRandomWord(messageBitSize);
+        String encodedMessage = encode(message);
+        int nbMessageWithIntegrity = 0;
+        int nbCorruptedMessageCorrectlyDetected = 0;
+
+        String corruptedMessage;
+        for (int i = 0; i < iterations; i++) {
+            corruptedMessage = SyntheticDataGenerator.corruptWord(encodedMessage, p);
+            if (encodedMessage.equals(corruptedMessage)) {
+                nbMessageWithIntegrity++;
+            } else {
+                if (isCorrupted(corruptedMessage)) {
+                    nbCorruptedMessageCorrectlyDetected++;
+                }
+            }
+        }
+        if (iterations - nbMessageWithIntegrity == 0) {
+            return 1.d;
+        }
+        return (double) nbCorruptedMessageCorrectlyDetected / (iterations - nbMessageWithIntegrity);
     }
 }

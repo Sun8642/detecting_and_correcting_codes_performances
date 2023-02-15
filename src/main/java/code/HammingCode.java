@@ -1,12 +1,13 @@
 package code;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import model.HammingResponse;
 import util.BitUtil;
+import util.SyntheticDataGenerator;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class HammingCode {
-
-    private HammingCode() {
-
-    }
 
     public static int hammingDistance(String codeWord1, String codeWord2) {
         return Integer.bitCount(Integer.parseInt(codeWord1, 2) ^ Integer.parseInt(codeWord2, 2));
@@ -49,7 +50,8 @@ public final class HammingCode {
         return encodedMessage.toString();
     }
 
-    public static String decode(String encodedMessage, boolean parity) {
+    //Only works for correct hamming code (where coded message length is equal to a power of 2 minus 1
+    public static HammingResponse decode(String encodedMessage, boolean parity) {
         int numberOfRedundancyBitsAdded = BitUtil.leftMostSetBit(encodedMessage.length());
         StringBuilder encodedMessageStrBuilder = new StringBuilder(encodedMessage);
 
@@ -88,7 +90,7 @@ public final class HammingCode {
             encodedMessageStrBuilder.replace(indexToRemove, indexToRemove + 1, "");
         }
 
-        return encodedMessageStrBuilder.toString();
+        return new HammingResponse(errorBitPosition != 0, encodedMessageStrBuilder.toString());
     }
 
     private static boolean isRedundancyBitIncorrect(int bitPosition, int numberOfOneForBitPosition, String encodedMessage, boolean parity) {
@@ -110,5 +112,40 @@ public final class HammingCode {
             power *= 2;
         }
         return n;
+    }
+
+    public static boolean isKValid(int k) {
+        return k >= 4 && BitUtil.isPowerOfTwo(k + numberOfRedundancyBitsToAdd(k) + 1);
+    }
+
+    public static double[] getProbabilityOfSuccess(int iterations, double p, int messageBitSize) {
+        String message = SyntheticDataGenerator.getRandomWord(messageBitSize);
+        String encodedMessage = encode(message, true);
+        int nbMessageWithIntegrity = 0;
+        int nbCorruptedMessageCorrectlyDetected = 0;
+        int nbCorruptedMessageCorrectlyCorrected = 0;
+
+        String corruptedMessage;
+        for (int i = 0; i < iterations; i++) {
+            corruptedMessage = SyntheticDataGenerator.corruptWord(encodedMessage, p);
+            if (encodedMessage.equals(corruptedMessage)) {
+                nbMessageWithIntegrity++;
+            } else {
+                HammingResponse hammingResponse = decode(corruptedMessage, true);
+                if (hammingResponse.getDecodedMessage().equals(message)) {
+                    nbCorruptedMessageCorrectlyCorrected++;
+                }
+                if (hammingResponse.isErrorDetected()) {
+                    nbCorruptedMessageCorrectlyDetected++;
+                }
+            }
+        }
+        if (iterations - nbMessageWithIntegrity == 0) {
+            return new double[]{1.d, 1.d};
+        }
+        return new double[]{
+                (double) nbCorruptedMessageCorrectlyDetected / (iterations - nbMessageWithIntegrity),
+                (double) nbCorruptedMessageCorrectlyCorrected / (iterations - nbMessageWithIntegrity)
+        };
     }
 }

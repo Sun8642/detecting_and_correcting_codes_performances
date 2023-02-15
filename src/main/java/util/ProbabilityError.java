@@ -1,10 +1,10 @@
 package util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ProbabilityError {
-
-    private ProbabilityError() {
-
-    }
 
     public static double getProbabilityOfError(int N, double p) {
         return 1.d - Math.pow(1.d - p, N);

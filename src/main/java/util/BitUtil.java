@@ -1,10 +1,10 @@
 package util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BitUtil {
-
-    private BitUtil() {
-
-    }
 
     public static int leftMostSetBit(int number) {
         int posLeftMostSetBit = 0;

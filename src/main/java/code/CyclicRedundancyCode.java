@@ -1,12 +1,12 @@
 package code;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import util.BitUtil;
+import util.SyntheticDataGenerator;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CyclicRedundancyCode {
-
-    private CyclicRedundancyCode() {
-
-    }
 
     public static String encode(String message, String generatorPolynomial) {
         //Multiply Ps by Xr
@@ -43,5 +43,28 @@ public final class CyclicRedundancyCode {
             throw new RuntimeException("Could not decode message, the encoded message is corrupted");
         }
         return encodedMessage.substring(0, encodedMessage.length() - (generatorPolynomial.length() - 1));
+    }
+
+    public static double getProbabilityOfSuccess(int iterations, double p, int messageBitSize, String generatorPolynomial) {
+        String message = SyntheticDataGenerator.getRandomWord(messageBitSize);
+        String encodedMessage = encode(message, generatorPolynomial);
+        int nbMessageWithIntegrity = 0;
+        int nbCorruptedMessageCorrectlyDetected = 0;
+
+        String corruptedMessage;
+        for (int i = 0; i < iterations; i++) {
+            corruptedMessage = SyntheticDataGenerator.corruptWord(encodedMessage, p);
+            if (encodedMessage.equals(corruptedMessage)) {
+                nbMessageWithIntegrity++;
+            } else {
+                if (isCorrupted(corruptedMessage, generatorPolynomial)) {
+                    nbCorruptedMessageCorrectlyDetected++;
+                }
+            }
+        }
+        if (iterations - nbMessageWithIntegrity == 0) {
+            return 1.d;
+        }
+        return (double) nbCorruptedMessageCorrectlyDetected / (iterations - nbMessageWithIntegrity);
     }
 }

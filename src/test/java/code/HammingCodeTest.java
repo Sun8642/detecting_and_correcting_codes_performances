@@ -1,6 +1,6 @@
 package code;
 
-import code.HammingCode;
+import model.HammingResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -48,13 +48,15 @@ public class HammingCodeTest {
 
     @ParameterizedTest
     @CsvSource({
-            "0110001,01100000100,true",     //No error
-            "11001010,110011010010,false",  //No error
-            "0110001,01100000101,true",     //One error
-            "0110001,01100100100,true",     //One error
-            "0110110,01100110100,true",     //Two error, original message: 0110001, error can't be corrected correctly
+            "false,0110001,01100000100,true",     //No error
+            "false,11001010,110011010010,false",  //No error
+            "true,0110001,01100000101,true",     //One error
+            "true,0110001,01100100100,true",     //One error
+            "true,0110110,01100110100,true",     //Two error, original message: 0110001, error can't be corrected correctly
     })
-    public void decode(String expected, String encodedMessage, boolean parity) {
-        Assertions.assertEquals(expected, HammingCode.decode(encodedMessage, parity));
+    public void decode(boolean isErrorDetectedExpected, String decodedMessageExpected, String encodedMessage, boolean parity) {
+        HammingResponse hammingResponse = HammingCode.decode(encodedMessage, parity);
+        Assertions.assertEquals(decodedMessageExpected, hammingResponse.getDecodedMessage());
+        Assertions.assertEquals(isErrorDetectedExpected, hammingResponse.isErrorDetected());
     }
 }
