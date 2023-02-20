@@ -30,4 +30,10 @@ public final class BitUtil {
         BigInteger rightVal = bigInteger.and(mask);
         return bigInteger.subtract(rightVal).shiftLeft(1).add(rightVal).add(bitSet ? BigInteger.ONE.shiftLeft(bitPosition) : BigInteger.ZERO);
     }
+
+    public static long insertBit(long number, int bitPosition, boolean bitSet) {
+        long mask = (1L << bitPosition) - 1;
+        long rightVal = number & mask;
+        return ((number - rightVal) << 1) + rightVal + (bitSet ? (1L << bitPosition) : 0L);
+    }
 }

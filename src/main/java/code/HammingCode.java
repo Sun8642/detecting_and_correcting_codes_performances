@@ -83,6 +83,36 @@ public final class HammingCode {
         return message;
     }
 
+    public static long encode(long message, boolean parity, int k) {
+        int numberOfRedundancyBitsToAdd = numberOfRedundancyBitsToAdd(k);
+        int n = k + numberOfRedundancyBitsToAdd;
+
+        //Transform block into coded block with all the redundancy bit initialized at 0 (to have the final positions of non redundancy bits)
+        for (int i = 0; i < numberOfRedundancyBitsToAdd; i++) {
+            message = BitUtil.insertBit(message, (int) (Math.pow(2.d, i)) - 1, false);
+        }
+
+        //Replace redundancy bits if needed
+        for (int i = 0; i < numberOfRedundancyBitsToAdd; i++) {
+            //For each position of bit in the message, we need to compute the sum of the ith bit representation of the position
+            int bitPosition = 1 << i;
+            int numberOfOneForBitPosition = 0;
+
+            //Calculate the number of bit set
+            for (int j = 3; j <= n; j++) {
+                if ((message & (1L << (j - 1))) != 0 && ((j & bitPosition) != 0)) {
+                    numberOfOneForBitPosition++;
+                }
+            }
+            if ((parity && numberOfOneForBitPosition % 2 == 1) || (!parity && numberOfOneForBitPosition % 2 == 0)) {
+                //The redundancy bit need to be 1
+                message = message | (1L << (bitPosition - 1));
+            }
+        }
+
+        return message;
+    }
+
     //Only works for correct hamming code (where coded message length is equal to a power of 2 minus 1
     public static HammingResponse decode(String encodedMessage, boolean parity) {
         int numberOfRedundancyBitsAdded = BitUtil.leftMostSetBit(encodedMessage.length());

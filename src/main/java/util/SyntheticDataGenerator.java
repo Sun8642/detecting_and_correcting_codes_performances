@@ -27,6 +27,10 @@ public final class SyntheticDataGenerator {
         return new BigInteger(numberOfBits, new Random());
     }
 
+    public static long getLongRandomWord(int numberOfBits) {
+        return (long) Math.floor(Math.random() * (1 << numberOfBits));
+    }
+
     //a bit faster when numberOfBits is very low
 //    public static String getRandomWord2(int numberOfBits) {
 //        return Integer.toBinaryString((int) Math.floor(Math.random() * (1 << numberOfBits)) + (1 << numberOfBits)).substring(1);

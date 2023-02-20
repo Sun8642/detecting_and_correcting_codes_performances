@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import util.SyntheticDataGenerator;
 
 import java.math.BigInteger;
 
@@ -55,6 +56,15 @@ public class HammingCodeTest {
     })
     public void encodeBigInteger(String expected, String messageToEncode, boolean parity) {
         Assertions.assertEquals(new BigInteger(expected, 2), HammingCode.encode(new BigInteger(messageToEncode, 2), parity, messageToEncode.length()));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "01100000100,0110001,true",
+            "110011010010,11001010,false"
+    })
+    public void encodeLong(String expected, String messageToEncode, boolean parity) {
+        Assertions.assertEquals(Long.parseLong(expected, 2), HammingCode.encode(Long.parseLong(messageToEncode, 2), parity, messageToEncode.length()));
     }
 
     @Test
@@ -111,6 +121,7 @@ public class HammingCodeTest {
     public void testPerformanceHamming() {
         String message = "10110010110";
         BigInteger messageBigInteger = new BigInteger(message, 2);
+        long messageLong = Long.parseLong(message, 2);
         long l = System.currentTimeMillis();
         for (int i = 0; i < 1000000; i++) {
             HammingCode.encode(message, true);
@@ -118,9 +129,35 @@ public class HammingCodeTest {
         long l1 = System.currentTimeMillis();
         System.out.println("temps hamming string: " + (l1 - l));
         for (int i = 0; i < 1000000; i++) {
-            HammingCode.encode(messageBigInteger, true, 4);
+            HammingCode.encode(messageBigInteger, true, 11);
         }
-        System.out.println("temps hamming biginteger: " + (System.currentTimeMillis() - l1));
+        long l2 = System.currentTimeMillis();
+        System.out.println("temps hamming biginteger: " + (l2 - l1));
+        for (int i = 0; i < 1000000; i++) {
+            HammingCode.encode(messageLong, true, 11);
+        }
+        long l3 = System.currentTimeMillis();
+        System.out.println("temps hamming long: " + (l3 - l2));
+    }
+
+    @Test
+    public void testPerformanceHamming2() {
+        long l = System.currentTimeMillis();
+        for (int i = 0; i < 1000000; i++) {
+            HammingCode.encode(SyntheticDataGenerator.getRandomWord(11), true);
+        }
+        long l1 = System.currentTimeMillis();
+        System.out.println("temps hamming string: " + (l1 - l));
+        for (int i = 0; i < 1000000; i++) {
+            HammingCode.encode(SyntheticDataGenerator.getBigIntegerRandomWord(11), true, 11);
+        }
+        long l2 = System.currentTimeMillis();
+        System.out.println("temps hamming biginteger: " + (l2 - l1));
+        for (int i = 0; i < 1000000; i++) {
+            HammingCode.encode(SyntheticDataGenerator.getLongRandomWord(11), true, 11);
+        }
+        long l3 = System.currentTimeMillis();
+        System.out.println("temps hamming long: " + (l3 - l2));
     }
 
     @ParameterizedTest
