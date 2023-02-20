@@ -5,9 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.math.BigInteger;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-class BitUtilTest {
+public class BitUtilTest {
 
     @ParameterizedTest
     @CsvSource({
@@ -16,7 +18,7 @@ class BitUtilTest {
             "4,8",
             "4,15"
     })
-    void leftMostSetBit(int expected, int number) {
+    public void leftMostSetBit(int expected, int number) {
         Assertions.assertEquals(expected, BitUtil.leftMostSetBit(number));
     }
 
@@ -29,7 +31,7 @@ class BitUtilTest {
             "true,16",
             "false,15",
     })
-    void isPowerOfTwo(boolean expected, int number) {
+    public void isPowerOfTwo(boolean expected, int number) {
         Assertions.assertEquals(expected, BitUtil.isPowerOfTwo(number));
     }
 
@@ -42,7 +44,20 @@ class BitUtilTest {
             "false,16",
             "true,15",
     })
-    void isNotPowerOfTwo(boolean expected, int number) {
+    public void isNotPowerOfTwo(boolean expected, int number) {
         Assertions.assertEquals(expected, BitUtil.isNotPowerOfTwo(number));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "10100,1000,2,true",
+            "10001,1000,0,true",
+            "10000,1000,0,false",
+            "10101010,1001010,5,true",
+            "100010,10,5,true",
+            "10,10,5,false",
+    })
+    public void insertBit(String expected, String binaryBigInteger, int bitPosition, boolean bitSet) {
+        Assertions.assertEquals(new BigInteger(expected, 2), BitUtil.insertBit(new BigInteger(binaryBigInteger, 2), bitPosition, bitSet));
     }
 }

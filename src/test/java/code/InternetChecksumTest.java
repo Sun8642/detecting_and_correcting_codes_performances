@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.math.BigInteger;
+
 public class InternetChecksumTest {
 
     @ParameterizedTest
@@ -13,6 +15,15 @@ public class InternetChecksumTest {
     })
     public void getChecksum(String expected, String message) {
         Assertions.assertEquals(expected, InternetChecksum.getChecksum(message));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "1111111111111111,0000000000000000",
+            "1011010100111101,011001100110000001010101010101011000111100001100"
+    })
+    public void getChecksumBigInteger(String expected, String message) {
+        Assertions.assertEquals(new BigInteger(expected, 2), InternetChecksum.getChecksum(new BigInteger(message, 2)));
     }
 
     @ParameterizedTest

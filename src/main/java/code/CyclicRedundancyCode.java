@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import util.BitUtil;
 import util.SyntheticDataGenerator;
 
+import java.math.BigInteger;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CyclicRedundancyCode {
 
@@ -16,6 +18,11 @@ public final class CyclicRedundancyCode {
         return Integer.toBinaryString(encodedMessageInt + getPolynomialArithmeticModulo2(encodedMessageInt, generatorPolynomialInt));
     }
 
+    public static BigInteger encode(BigInteger message, BigInteger generatorPolynomial) {
+        BigInteger encodedMessage = message.shiftLeft(generatorPolynomial.bitLength() - 1);
+        return encodedMessage.add(getPolynomialArithmeticModulo2(encodedMessage, generatorPolynomial));
+    }
+
     private static int getPolynomialArithmeticModulo2(int dividend, int divisor) {
         int remainder = dividend;
         int remainderLeftMostSetBit = BitUtil.leftMostSetBit(remainder);
@@ -24,6 +31,18 @@ public final class CyclicRedundancyCode {
         while (remainderLeftMostSetBit >= divisorLeftMostSetBit) {
             remainder = remainder ^ (divisor << (remainderLeftMostSetBit - divisorLeftMostSetBit));
             remainderLeftMostSetBit = BitUtil.leftMostSetBit(remainder);
+        }
+        return remainder;
+    }
+
+    private static BigInteger getPolynomialArithmeticModulo2(BigInteger dividend, BigInteger divisor) {
+        BigInteger remainder = dividend;
+        int remainderLeftMostSetBit = remainder.bitLength();
+        int divisorLeftMostSetBit = divisor.bitLength();
+
+        while (remainderLeftMostSetBit >= divisorLeftMostSetBit) {
+            remainder = remainder.xor(divisor.shiftLeft(remainderLeftMostSetBit - divisorLeftMostSetBit));
+            remainderLeftMostSetBit = remainder.bitLength();
         }
         return remainder;
     }

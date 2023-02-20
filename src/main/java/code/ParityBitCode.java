@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import util.ProbabilityError;
 import util.SyntheticDataGenerator;
 
+import java.math.BigInteger;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ParityBitCode {
 
@@ -20,6 +22,11 @@ public final class ParityBitCode {
         return message + (isNumberOfOneEven(message) ? '0' : '1');
     }
 
+    public static BigInteger encode(BigInteger message) {
+        message = message.shiftLeft(1);
+        return message.bitCount() % 2 == 0 ? message : message.add(BigInteger.ONE);
+    }
+
     public static String decode(String encodedMessage) {
         if (isCorrupted(encodedMessage)) {
             throw new RuntimeException("Could not decode message, the encoded message is corrupted");
@@ -27,8 +34,19 @@ public final class ParityBitCode {
         return encodedMessage.substring(0, encodedMessage.length() - 1);
     }
 
+    public static BigInteger decode(BigInteger encodedMessage) {
+        if (isCorrupted(encodedMessage)) {
+            throw new RuntimeException("Could not decode message, the encoded message is corrupted");
+        }
+        return encodedMessage.shiftRight(1);
+    }
+
     public static boolean isCorrupted(String message) {
         return !isNumberOfOneEven(message);
+    }
+
+    public static boolean isCorrupted(BigInteger message) {
+        return message.bitCount() % 2 != 0;
     }
 
     private static boolean isNumberOfOneEven(String message) {

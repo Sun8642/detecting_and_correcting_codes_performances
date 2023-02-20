@@ -3,6 +3,9 @@ package util;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.math.BigInteger;
+import java.util.Random;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SyntheticDataGenerator {
 
@@ -20,6 +23,10 @@ public final class SyntheticDataGenerator {
         return s.length() == numberOfBits ? s : "0".repeat(numberOfBits - s.length()) + s;
     }
 
+    public static BigInteger getBigIntegerRandomWord(int numberOfBits) {
+        return new BigInteger(numberOfBits, new Random());
+    }
+
     //a bit faster when numberOfBits is very low
 //    public static String getRandomWord2(int numberOfBits) {
 //        return Integer.toBinaryString((int) Math.floor(Math.random() * (1 << numberOfBits)) + (1 << numberOfBits)).substring(1);
@@ -33,6 +40,15 @@ public final class SyntheticDataGenerator {
             }
         }
         return stringBuilder.toString();
+    }
+
+    public static BigInteger corruptWord(BigInteger message, int messageLength, double p) {
+        for (int i = 0; i < messageLength; i++) {
+            if (Math.random() <= p) {
+                message = message.flipBit(i);
+            }
+        }
+        return message;
     }
 
     public static String corruptWord(String message, double p, boolean isBurstError, int burstErrorLength) {

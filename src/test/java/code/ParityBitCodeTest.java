@@ -1,9 +1,10 @@
 package code;
 
-import code.ParityBitCode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import java.math.BigInteger;
 
 public class ParityBitCodeTest {
 
@@ -25,6 +26,17 @@ public class ParityBitCodeTest {
     })
     public void encode(String expected, String message) {
         Assertions.assertEquals(expected, ParityBitCode.encode(message));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "00000,0000",
+            "11110,1111",
+            "101101,10110",
+            "1011010,101101",
+    })
+    public void encodeBigInteger(String expected, String message) {
+        Assertions.assertEquals(new BigInteger(expected, 2), ParityBitCode.encode(new BigInteger(message, 2)));
     }
 
     @ParameterizedTest

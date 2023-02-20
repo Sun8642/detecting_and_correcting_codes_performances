@@ -92,6 +92,10 @@ public class Main {
                 codeParameter.setBurstError(true);
             }
 
+            if (line.hasOption(iterationsPerP)) {
+                codeParameter.setNumberOfIterationsPerProbability(Integer.parseInt((String) line.getParsedOptionValue(iterationsPerP)));
+            }
+
             Test2.test(codeParameter, detectingCode);
         } catch (ParseException | IllegalArgumentException exp) {
             // oops, something went wrong

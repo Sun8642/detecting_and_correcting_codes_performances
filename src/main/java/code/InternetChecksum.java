@@ -4,17 +4,28 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import util.SyntheticDataGenerator;
 
+import java.math.BigInteger;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class InternetChecksum {
 
     public static final String REGEX_STRING_16_CHARS = "(?<=\\G.{16})";
+    private static final BigInteger MASK_16_BITS = BigInteger.valueOf(0xffff);
+
+    public static String encode(String message) {
+        return message + getChecksum(message);
+    }
+
+    public static BigInteger encode(BigInteger message) {
+        return message.shiftLeft(16).add(getChecksum(message));
+    }
 
     public static String getChecksum(String message) {
         return Integer.toBinaryString(getChecksumInt(message));
     }
 
-    public static String encode(String message) {
-        return message + getChecksum(message);
+    public static BigInteger getChecksum(BigInteger message) {
+        return getSumOfWords(message).not().and(MASK_16_BITS);
     }
 
     private static int getChecksumInt(String message) {
@@ -34,6 +45,17 @@ public final class InternetChecksum {
         }
 
         return (checksum & 0xffff) + (checksum >> 16);
+    }
+
+    private static BigInteger getSumOfWords(BigInteger message) {
+        int length = ((int) Math.ceil((float) message.bitLength() / 16)) * 16;
+        BigInteger result = message;
+        while (length > 16) {
+            length -= 16;
+            result = result.shiftRight(16).add(result.mod(BigInteger.ONE.shiftLeft(16)));
+        }
+
+        return result.and(MASK_16_BITS).add(result.shiftRight(16));
     }
 
     public static double getProbabilityOfSuccess(int iterations, double p, int messageBitSize) {
