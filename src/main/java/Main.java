@@ -1,18 +1,10 @@
 import enums.DetectingCode;
-import model.CodeParameter;
-import model.CyclicRedundancyCodeParameter;
-import model.HammingCodeParameter;
-import model.InternetChecksumParameter;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import model.*;
+import org.apache.commons.cli.*;
 import test.Test2;
 
 import java.text.Normalizer;
+import java.util.Scanner;
 
 public class Main {
 
@@ -21,6 +13,10 @@ public class Main {
 //        Test2.test(new CyclicRedundancyCodeParameter(), DetectingCode.CYCLIC_REDUNDANCY_CODE);
 //        Test2.test(new InternetChecksumParameter(), DetectingCode.INTERNET_CHECKSUM);
 //        Test2.test(new HammingCodeParameter(), DetectingCode.HAMMING_CODE);
+
+        askCommand();
+        if (true)
+            return;
 
         Options options = new Options();
         Option code = Option.builder("C")
@@ -86,7 +82,7 @@ public class Main {
         try {
             CommandLine line = parser.parse(options, args);
             DetectingCode detectingCode = parseCode((String) line.getParsedOptionValue(code));
-            CodeParameter codeParameter = getCodeParameter(detectingCode, code, line);
+            CodeParameter codeParameter = getCodeParameter(detectingCode);
 
             if (line.hasOption(burstLength)) {
                 codeParameter.setBurstError(true);
@@ -105,7 +101,7 @@ public class Main {
         }
     }
 
-    private static CodeParameter getCodeParameter(DetectingCode detectingCode, Option code, CommandLine line) throws ParseException {
+    private static CodeParameter getCodeParameter(DetectingCode detectingCode) throws ParseException {
         CodeParameter codeParameter;
         switch (detectingCode) {
             case CYCLIC_REDUNDANCY_CODE -> codeParameter = new CyclicRedundancyCodeParameter();
@@ -114,6 +110,77 @@ public class Main {
             default -> codeParameter = new CodeParameter();
         }
         return codeParameter;
+    }
+
+    private static void askCommand() {
+        try (Scanner scanner = new Scanner(System.in)) {
+            String mainCommand;
+            String subCommand;
+            String[] splitCommand;
+            CommandLineParser parser = new DefaultParser();
+            ProgramOption programOption = new ProgramOption();
+            Options options;
+            HelpFormatter formatter = new HelpFormatter();
+            printUsage();
+            do {
+                System.out.println("Enter a command: ");
+                mainCommand = scanner.nextLine();
+                if ("exit".equals(mainCommand)) {
+                    return;
+                }
+                switch (mainCommand) {
+                    case "encode":
+                    case "decode":
+                        options = programOption.getEncodeDecodeOptions();
+                        break;
+                    case "generateMessage":
+                        options = programOption.getGenerateMessageOptions();
+                        break;
+                    case "corruptMessage":
+                        options = programOption.getCorruptMessageOptions();
+                        break;
+                    case "generateGraph":
+                        options = programOption.getGraphOptions();
+                        break;
+                    default:
+                        System.out.println("Couldn't recognize the command");
+                        printUsage();
+                        continue;
+                }
+                formatter.printHelp(mainCommand, options, true);
+                subCommand = scanner.nextLine();
+                splitCommand = subCommand.split(" ");
+            } while (true);
+        }
+    }
+
+    private static void printUsage() {
+        System.out.println("Usage : ");
+        System.out.println("exit: exit the program");
+        System.out.println("encode: encode a message ");
+        System.out.println("generateGraph: generate a graph showing the detecting/correcting error rate of a specified code");
+        System.out.println();
+    }
+
+    private static void generateGraph(CommandLineParser parser, Options options, String[] splitCommand) {
+        try {
+            CommandLine line = parser.parse(options, splitCommand);
+            DetectingCode detectingCode = parseCode((String) line.getParsedOptionValue(ProgramOption.CODE));
+            CodeParameter codeParameter = getCodeParameter(detectingCode);
+
+//            if (line.hasOption(burstLength)) {
+//                codeParameter.setBurstError(true);
+//            }
+
+//            if (line.hasOption(iterationsPerP)) {
+//                codeParameter.setNumberOfIterationsPerProbability(Integer.parseInt((String) line.getParsedOptionValue(iterationsPerP)));
+//            }
+
+            Test2.test(codeParameter, detectingCode);
+        } catch (ParseException | IllegalArgumentException exp) {
+            // oops, something went wrong
+            System.err.println("Parsing failed.  Reason: " + exp.getMessage());
+        }
     }
 
     public static DetectingCode parseCode(String code) {

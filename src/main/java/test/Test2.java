@@ -70,7 +70,7 @@ public final class Test2 {
 
         Plot2DPanel plot = new Plot2DPanel();
 
-        plot.setAxisLabels("Probability of a bit being corrupted", "Error detection" + (codeParameter.isCanCorrectError() ? "/correction" : "" + " rate"));
+        plot.setAxisLabels("Probability of a bit being corrupted", "Error detection" + (codeParameter.isCanCorrectError() ? "/correction" : "") + " rate");
         plot.addLinePlot("Error detection rate", x, y);
 
         if (codeParameter.isCanCorrectError()) {
