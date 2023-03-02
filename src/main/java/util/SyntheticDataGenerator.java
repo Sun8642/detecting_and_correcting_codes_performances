@@ -1,13 +1,17 @@
 package util;
 
+import java.util.BitSet;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.math.BigInteger;
 import java.util.Random;
+import test.BigInt;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SyntheticDataGenerator {
+
+    private static final Random RANDOM = new Random();
 
     //Nearly 2 times slower than the other fct
 //    public static String getRandomWord(int numberOfBits) {
@@ -24,11 +28,19 @@ public final class SyntheticDataGenerator {
     }
 
     public static BigInteger getBigIntegerRandomWord(int numberOfBits) {
-        return new BigInteger(numberOfBits, new Random());
+        return new BigInteger(numberOfBits, RANDOM);
     }
 
     public static long getLongRandomWord(int numberOfBits) {
         return (long) Math.floor(Math.random() * (1 << numberOfBits));
+    }
+
+    public static BitSet getBitsetRandomWord(int numberOfBits) {
+        return BitSet.valueOf(new long[]{(long) Math.floor(Math.random() * (1 << numberOfBits))});
+    }
+
+    public static BigInt getBigIntRandomWord(int numberOfBits) {
+        return new BigInt(numberOfBits, RANDOM);
     }
 
     //a bit faster when numberOfBits is very low

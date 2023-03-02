@@ -1,8 +1,10 @@
 package code;
 
+import java.util.BitSet;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import model.HammingResponse;
+import test.BigInt;
 import util.BitUtil;
 import util.SyntheticDataGenerator;
 
@@ -83,6 +85,40 @@ public final class HammingCode {
         return message;
     }
 
+    public static void encode(BigInt message, boolean parity, int k) {
+        int numberOfRedundancyBitsToAdd = numberOfRedundancyBitsToAdd(k);
+
+        //Transform block into coded block with all the redundancy bit initialized at 0 (to have the final positions of non redundancy bits)
+        for (int i = 0; i < numberOfRedundancyBitsToAdd; i++) {
+            BitUtil.insertBit(message, (int) (Math.pow(2.d, i)) - 1, false);
+        }
+
+        BigInt tmp;
+        int leftMostSetBit = message.getLeftMostSetBit();
+
+        //Replace redundancy bits if needed
+        for (int i = 0; i < numberOfRedundancyBitsToAdd; i++) {
+            //For each position of bit in the message, we need to compute the sum of the ith bit representation of the position
+            int bitPosition = 1 << i;
+            int numberOfOneForBitPosition = 0;
+
+            //Calculate the number of bit set
+            for (int j = 2; j < leftMostSetBit; j++) {
+                if (message.testBit(j)) {
+                    if ((bitPosition & (j + 1)) != 0) {
+                        numberOfOneForBitPosition++;
+                    }
+                }
+            }
+            if ((parity && numberOfOneForBitPosition % 2 == 1) || (!parity && numberOfOneForBitPosition % 2 == 0)) {
+                //The redundancy bit need to be 1
+                tmp = new BigInt(0);
+                tmp.setBit(bitPosition - 1);
+                message.or(tmp);
+            }
+        }
+    }
+
     public static long encode(long message, boolean parity, int k) {
         int numberOfRedundancyBitsToAdd = numberOfRedundancyBitsToAdd(k);
         int n = k + numberOfRedundancyBitsToAdd;
@@ -111,6 +147,40 @@ public final class HammingCode {
         }
 
         return message;
+    }
+
+    public static void encode(BitSet message, boolean parity, int k) {
+        int numberOfRedundancyBitsToAdd = numberOfRedundancyBitsToAdd(k);
+        int n = k + numberOfRedundancyBitsToAdd;
+
+        //Transform block into coded block with all the redundancy bit initialized at 0 (to have the final positions of non redundancy bits)
+        for (int i = 0; i < numberOfRedundancyBitsToAdd; i++) {
+            BitUtil.insertBit(message, (int) (Math.pow(2.d, i)) - 1, false);
+        }
+
+        BitSet tmp;
+
+        //Replace redundancy bits if needed
+        for (int i = 0; i < numberOfRedundancyBitsToAdd; i++) {
+            //For each position of bit in the message, we need to compute the sum of the ith bit representation of the position
+            int bitPosition = 1 << i;
+            int numberOfOneForBitPosition = 0;
+
+            //Calculate the number of bit set
+            for (int j = 3; j <= n; j++) {
+                tmp = new BitSet();
+                tmp.set(j - 1);
+                if (message.intersects(tmp) && ((j & bitPosition) != 0)) {
+                    numberOfOneForBitPosition++;
+                }
+            }
+            if ((parity && numberOfOneForBitPosition % 2 == 1) || (!parity && numberOfOneForBitPosition % 2 == 0)) {
+                //The redundancy bit need to be 1
+                tmp = new BitSet();
+                tmp.set(bitPosition - 1);
+                message.or(tmp);
+            }
+        }
     }
 
     //Only works for correct hamming code (where coded message length is equal to a power of 2 minus 1

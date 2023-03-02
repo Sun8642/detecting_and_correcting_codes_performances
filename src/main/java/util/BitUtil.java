@@ -1,9 +1,10 @@
 package util;
 
+import java.math.BigInteger;
+import java.util.BitSet;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-
-import java.math.BigInteger;
+import test.BigInt;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BitUtil {
@@ -31,9 +32,31 @@ public final class BitUtil {
         return bigInteger.subtract(rightVal).shiftLeft(1).add(rightVal).add(bitSet ? BigInteger.ONE.shiftLeft(bitPosition) : BigInteger.ZERO);
     }
 
+    public static void insertBit(BigInt bigInt, int bitPosition, boolean bitSet) {
+        for (int i = bigInt.getLeftMostSetBit() - 1; i >= bitPosition; i--) {
+            if (bigInt.testBit(i)) {
+                bigInt.setBit(i + 1);
+            } else {
+                bigInt.clearBit(i + 1);
+            }
+        }
+        if (bitSet) {
+            bigInt.setBit(bitPosition);
+        } else {
+            bigInt.clearBit(bitPosition);
+        }
+    }
+
     public static long insertBit(long number, int bitPosition, boolean bitSet) {
         long mask = (1L << bitPosition) - 1;
         long rightVal = number & mask;
         return ((number - rightVal) << 1) + rightVal + (bitSet ? (1L << bitPosition) : 0L);
+    }
+
+    public static void insertBit(BitSet number, int bitPosition, boolean bitSet) {
+        for (int i = number.length() - 1; i >= bitPosition; i--) {
+            number.set(i + 1, number.get(i));
+        }
+        number.set(bitPosition, bitSet);
     }
 }

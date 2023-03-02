@@ -1,10 +1,13 @@
 package code;
 
+import java.util.BitSet;
 import model.HammingResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.openjdk.jmh.annotations.Benchmark;
+import test.BigInt;
 import util.SyntheticDataGenerator;
 
 import java.math.BigInteger;
@@ -63,101 +66,30 @@ public class HammingCodeTest {
             "01100000100,0110001,true",
             "110011010010,11001010,false"
     })
+    public void encodeBigInt(String expected, String messageToEncode, boolean parity) {
+        BigInt messageToEncodeBigInt = new BigInt(Long.parseLong(messageToEncode, 2));
+        HammingCode.encode(messageToEncodeBigInt, parity, messageToEncode.length());
+        Assertions.assertEquals(new BigInt(Long.parseLong(expected, 2)), messageToEncodeBigInt);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "01100000100,0110001,true",
+            "110011010010,11001010,false"
+    })
     public void encodeLong(String expected, String messageToEncode, boolean parity) {
         Assertions.assertEquals(Long.parseLong(expected, 2), HammingCode.encode(Long.parseLong(messageToEncode, 2), parity, messageToEncode.length()));
     }
 
-    @Test
-    public void testPerformanceParityBit() {
-        String message = "10110010110";
-        BigInteger messageBigInteger = new BigInteger(message, 2);
-        long l = System.currentTimeMillis();
-        for (int i = 0; i < 1000000; i++) {
-            ParityBitCode.encode(message);
-        }
-        long l1 = System.currentTimeMillis();
-        System.out.println("temps pbc string: " + (l1 - l));
-        for (int i = 0; i < 1000000; i++) {
-            ParityBitCode.encode(messageBigInteger);
-        }
-        System.out.println("temps pbc biginteger: " + (System.currentTimeMillis() - l1));
-    }
-
-    @Test
-    public void testPerformanceInternetChecksum() {
-        String message = "101011011100101010101101110010101010110111001010";
-        BigInteger messageBigInteger = new BigInteger(message, 2);
-        long l = System.currentTimeMillis();
-        for (int i = 0; i < 1000000; i++) {
-            InternetChecksum.encode(message);
-        }
-        long l1 = System.currentTimeMillis();
-        System.out.println("temps InternetChecksum string: " + (l1 - l));
-        for (int i = 0; i < 1000000; i++) {
-            InternetChecksum.encode(messageBigInteger);
-        }
-        System.out.println("temps InternetChecksum biginteger: " + (System.currentTimeMillis() - l1));
-    }
-
-    @Test
-    public void testPerformanceCRC() {
-        String message = "10010101010101010101010";
-        String generatorPolynomial = "1000110110010101";
-        BigInteger messageBigInteger = new BigInteger(message, 2);
-        BigInteger generatorPolynomialBigInteger = new BigInteger(generatorPolynomial, 2);
-        long l = System.currentTimeMillis();
-        for (int i = 0; i < 1000000; i++) {
-            CyclicRedundancyCode.encode(message, generatorPolynomial);
-        }
-        long l1 = System.currentTimeMillis();
-        System.out.println("temps CyclicRedundancyCode string: " + (l1 - l));
-        for (int i = 0; i < 1000000; i++) {
-            CyclicRedundancyCode.encode(messageBigInteger, generatorPolynomialBigInteger);
-        }
-        System.out.println("temps CyclicRedundancyCode biginteger: " + (System.currentTimeMillis() - l1));
-    }
-
-    @Test
-    public void testPerformanceHamming() {
-        String message = "10110010110";
-        BigInteger messageBigInteger = new BigInteger(message, 2);
-        long messageLong = Long.parseLong(message, 2);
-        long l = System.currentTimeMillis();
-        for (int i = 0; i < 1000000; i++) {
-            HammingCode.encode(message, true);
-        }
-        long l1 = System.currentTimeMillis();
-        System.out.println("temps hamming string: " + (l1 - l));
-        for (int i = 0; i < 1000000; i++) {
-            HammingCode.encode(messageBigInteger, true, 11);
-        }
-        long l2 = System.currentTimeMillis();
-        System.out.println("temps hamming biginteger: " + (l2 - l1));
-        for (int i = 0; i < 1000000; i++) {
-            HammingCode.encode(messageLong, true, 11);
-        }
-        long l3 = System.currentTimeMillis();
-        System.out.println("temps hamming long: " + (l3 - l2));
-    }
-
-    @Test
-    public void testPerformanceHamming2() {
-        long l = System.currentTimeMillis();
-        for (int i = 0; i < 1000000; i++) {
-            HammingCode.encode(SyntheticDataGenerator.getRandomWord(11), true);
-        }
-        long l1 = System.currentTimeMillis();
-        System.out.println("temps hamming string: " + (l1 - l));
-        for (int i = 0; i < 1000000; i++) {
-            HammingCode.encode(SyntheticDataGenerator.getBigIntegerRandomWord(11), true, 11);
-        }
-        long l2 = System.currentTimeMillis();
-        System.out.println("temps hamming biginteger: " + (l2 - l1));
-        for (int i = 0; i < 1000000; i++) {
-            HammingCode.encode(SyntheticDataGenerator.getLongRandomWord(11), true, 11);
-        }
-        long l3 = System.currentTimeMillis();
-        System.out.println("temps hamming long: " + (l3 - l2));
+    @ParameterizedTest
+    @CsvSource({
+            "01100000100,0110001,true",
+            "110011010010,11001010,false"
+    })
+    public void encodeBitSet(String expected, String messageToEncode, boolean parity) {
+        BitSet bitSet = BitSet.valueOf(new long[]{Long.parseLong(messageToEncode, 2)});
+        HammingCode.encode(bitSet, parity, messageToEncode.length());
+        Assertions.assertEquals(BitSet.valueOf(new long[]{Long.parseLong(expected, 2)}), bitSet);
     }
 
     @ParameterizedTest
