@@ -6,6 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.math.BigInteger;
+import math.BigInt;
 
 public class InternetChecksumTest {
 
@@ -16,6 +17,35 @@ public class InternetChecksumTest {
     })
     public void encode(String expected, String message) {
         Assertions.assertEquals(expected, InternetChecksum.encode(message));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "00000000000000001111111111111111,0000000000000000",
+            "0110011001100000010101010101010110001111000011001011010100111101,011001100110000001010101010101011000111100001100"
+    })
+    public void encodeBigInteger(String expected, String message) {
+        Assertions.assertEquals(new BigInteger(expected, 2), InternetChecksum.encode(new BigInteger(message, 2)));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "00000000000000001111111111111111,0000000000000000",
+            "0110011001100000010101010101010110001111000011001011010100111101,011001100110000001010101010101011000111100001100"
+    })
+    public void encodeBigInt(String expected, String message) {
+        BigInt encodedMessage = new BigInt(Long.parseLong(message, 2));
+        InternetChecksum.encode(encodedMessage);
+        Assertions.assertEquals(new BigInt(Long.parseLong(expected, 2)), encodedMessage);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "00000000000000001111111111111111,0000000000000000",
+            "0110011001100000010101010101010110001111000011001011010100111101,011001100110000001010101010101011000111100001100"
+    })
+    public void encodeLong(String expected, String message) {
+        Assertions.assertEquals(Long.parseLong(expected, 2), InternetChecksum.encode(Long.parseLong(message, 2)));
     }
 
     @ParameterizedTest

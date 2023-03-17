@@ -1,15 +1,17 @@
-package benchmark;
-
 import java.math.BigInteger;
 import java.util.Random;
 import math.BigInt;
-import org.junit.jupiter.api.Test;
 import org.openjdk.jol.info.ClassLayout;
 
-public class StructureMemoryConsumption {
+public class StructureMemoryConsumptionRunner {
 
-    @Test
-    public void bigInt() {
+    public static void main(String[] args) {
+        bigInt();
+        bigInteger();
+        string();
+    }
+
+    public static void bigInt() {
         BigInt bigInt32bits = new BigInt(1L);
         bigInt32bits.shiftLeft(31);
         System.out.println(ClassLayout.parseInstance(bigInt32bits).toPrintable());
@@ -27,8 +29,7 @@ public class StructureMemoryConsumption {
         System.out.println("============================================================");
     }
 
-    @Test
-    public void bigInteger() {
+    public static void bigInteger() {
         BigInteger bigInt32bits = BigInteger.ONE;
         bigInt32bits = bigInt32bits.shiftLeft(31);
         System.out.println(ClassLayout.parseInstance(bigInt32bits).toPrintable());
@@ -50,8 +51,7 @@ public class StructureMemoryConsumption {
         System.out.println(ClassLayout.parseInstance(arrayInt2).toPrintable());
     }
 
-    @Test
-    public void string() {
+    public static void string() {
         String stringTest = "memory";
         System.out.println(ClassLayout.parseInstance(stringTest).toPrintable());
         System.out.println("------------------------------------------------------------");

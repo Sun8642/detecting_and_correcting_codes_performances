@@ -4,7 +4,7 @@ import java.util.BitSet;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import model.HammingResponse;
-import test.BigInt;
+import math.BigInt;
 import util.BitUtil;
 import util.SyntheticDataGenerator;
 
@@ -114,7 +114,7 @@ public final class HammingCode {
                 //The redundancy bit need to be 1
                 tmp = new BigInt(0);
                 tmp.setBit(bitPosition - 1);
-                message.or(tmp);
+                message.or2(tmp);
             }
         }
     }

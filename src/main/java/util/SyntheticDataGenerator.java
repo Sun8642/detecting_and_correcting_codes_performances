@@ -1,34 +1,40 @@
 package util;
 
+import java.math.BigInteger;
 import java.util.BitSet;
+import java.util.Random;
+import java.util.SplittableRandom;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-
-import java.math.BigInteger;
-import java.util.Random;
-import test.BigInt;
+import math.BigInt;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SyntheticDataGenerator {
 
     private static final Random RANDOM = new Random();
-
-    //Nearly 2 times slower than the other fct
-//    public static String getRandomWord(int numberOfBits) {
-//        StringBuilder stringBuilder = new StringBuilder();
-//        for (int i = 0; i < numberOfBits; i++) {
-//            stringBuilder.append(Math.random() >= 0.5d ? '1' : '0');
-//        }
-//        return stringBuilder.toString();
-//    }
+    private static final SplittableRandom SPLITTABLE_RANDOM = new SplittableRandom();
 
     public static String getRandomWord(int numberOfBits) {
         String s = Integer.toBinaryString((int) Math.floor(Math.random() * (1 << numberOfBits)));
         return s.length() == numberOfBits ? s : "0".repeat(numberOfBits - s.length()) + s;
     }
 
+    public static String getRandomWord2(int numberOfBits) {
+        String s = Integer.toBinaryString(RANDOM.nextInt() & ((1 << numberOfBits) - 1));
+        return s.length() == numberOfBits ? s : "0".repeat(numberOfBits - s.length()) + s;
+    }
+
+    public static String getRandomSplittableWord(int numberOfBits) {
+        String s = new BigInt(numberOfBits, SPLITTABLE_RANDOM).toString();
+        return s.length() == numberOfBits ? s : "0".repeat(numberOfBits - s.length()) + s;
+    }
+
     public static BigInteger getBigIntegerRandomWord(int numberOfBits) {
         return new BigInteger(numberOfBits, RANDOM);
+    }
+
+    public static BigInt getBigIntRandomWord(int numberOfBits) {
+        return new BigInt(numberOfBits, SPLITTABLE_RANDOM);
     }
 
     public static long getLongRandomWord(int numberOfBits) {
@@ -37,10 +43,6 @@ public final class SyntheticDataGenerator {
 
     public static BitSet getBitsetRandomWord(int numberOfBits) {
         return BitSet.valueOf(new long[]{(long) Math.floor(Math.random() * (1 << numberOfBits))});
-    }
-
-    public static BigInt getBigIntRandomWord(int numberOfBits) {
-        return new BigInt(numberOfBits, RANDOM);
     }
 
     //a bit faster when numberOfBits is very low

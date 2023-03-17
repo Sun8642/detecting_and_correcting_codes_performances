@@ -1,16 +1,13 @@
 package code;
 
+import java.math.BigInteger;
 import java.util.BitSet;
 import model.HammingResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.openjdk.jmh.annotations.Benchmark;
-import test.BigInt;
-import util.SyntheticDataGenerator;
-
-import java.math.BigInteger;
+import math.BigInt;
 
 public class HammingCodeTest {
 
@@ -32,8 +29,8 @@ public class HammingCodeTest {
     }
 
     /*
-    *  Montrer que d H ainsi définie est une distance sur V n . 2. Montrer que si V est binaire, d H ( x, y ) = w ( x ⊕ y ) .
-    * */
+     *  Montrer que d H ainsi définie est une distance sur V n . 2. Montrer que si V est binaire, d H ( x, y ) = w ( x ⊕ y ) .
+     * */
     @Test
     public void hammingDistance_distanceBetweenTwoWordsIsEqualToWeightOfXorOfTwoWords() {
         String a = "10101010";

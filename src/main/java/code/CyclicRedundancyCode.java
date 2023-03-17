@@ -1,21 +1,27 @@
 package code;
 
+import java.math.BigInteger;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import math.BigInt;
 import util.BitUtil;
 import util.SyntheticDataGenerator;
-
-import java.math.BigInteger;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CyclicRedundancyCode {
 
     public static String encode(String message, String generatorPolynomial) {
         //Multiply Ps by Xr
-        int encodedMessageInt = Integer.parseInt(message, 2) << (generatorPolynomial.length() - 1);
-        int generatorPolynomialInt = Integer.parseInt(generatorPolynomial, 2);
+        String encodedMessage = message + "0".repeat(generatorPolynomial.length() - 1);
 
-        return Integer.toBinaryString(encodedMessageInt + getPolynomialArithmeticModulo2(encodedMessageInt, generatorPolynomialInt));
+        return message + getPolynomialArithmeticModulo2(encodedMessage, generatorPolynomial);
+    }
+
+    public static long encode(long message, long generatorPolynomial) {
+        //Multiply Ps by Xr
+        message <<= (BitUtil.leftMostSetBit(generatorPolynomial) - 1);
+
+        return message + getPolynomialArithmeticModulo2(message, generatorPolynomial);
     }
 
     public static BigInteger encode(BigInteger message, BigInteger generatorPolynomial) {
@@ -23,8 +29,33 @@ public final class CyclicRedundancyCode {
         return encodedMessage.add(getPolynomialArithmeticModulo2(encodedMessage, generatorPolynomial));
     }
 
-    private static int getPolynomialArithmeticModulo2(int dividend, int divisor) {
-        int remainder = dividend;
+    public static void encode(BigInt message, BigInt generatorPolynomial) {
+        message.shiftLeft(generatorPolynomial.getLeftMostSetBit() - 1);
+        message.add(getPolynomialArithmeticModulo2(message, generatorPolynomial));
+    }
+
+    public static String getPolynomialArithmeticModulo2(String dividend, String divisor) {
+        StringBuilder remainder = new StringBuilder(dividend);
+        int remainderLeftMostSetBit = BitUtil.leftMostSetBit(remainder, remainder.length());
+        int divisorLeftMostSetBit = BitUtil.leftMostSetBit(divisor, divisor.length());
+
+        int i, j;
+        while (remainderLeftMostSetBit >= divisorLeftMostSetBit) {
+            i = 0;
+            while (i < divisorLeftMostSetBit) {
+                j = remainder.length() - remainderLeftMostSetBit + i;
+                if (divisor.charAt(divisor.length() - divisorLeftMostSetBit + i) == '1') {
+                    remainder.setCharAt(j, remainder.charAt(j) == '0' ? '1' : '0');
+                }
+                i++;
+            }
+            remainderLeftMostSetBit = BitUtil.leftMostSetBit(remainder, remainderLeftMostSetBit - 1);
+        }
+        return remainder.substring(remainder.length() - divisor.length() + 1, remainder.length());
+    }
+
+    public static long getPolynomialArithmeticModulo2(long dividend, long divisor) {
+        long remainder = dividend;
         int remainderLeftMostSetBit = BitUtil.leftMostSetBit(remainder);
         int divisorLeftMostSetBit = BitUtil.leftMostSetBit(divisor);
 
@@ -35,7 +66,7 @@ public final class CyclicRedundancyCode {
         return remainder;
     }
 
-    private static BigInteger getPolynomialArithmeticModulo2(BigInteger dividend, BigInteger divisor) {
+    public static BigInteger getPolynomialArithmeticModulo2(BigInteger dividend, BigInteger divisor) {
         BigInteger remainder = dividend;
         int remainderLeftMostSetBit = remainder.bitLength();
         int divisorLeftMostSetBit = divisor.bitLength();
@@ -43,6 +74,27 @@ public final class CyclicRedundancyCode {
         while (remainderLeftMostSetBit >= divisorLeftMostSetBit) {
             remainder = remainder.xor(divisor.shiftLeft(remainderLeftMostSetBit - divisorLeftMostSetBit));
             remainderLeftMostSetBit = remainder.bitLength();
+        }
+        return remainder;
+    }
+
+    public static BigInt getPolynomialArithmeticModulo2(BigInt dividend, BigInt divisor) {
+        BigInt remainder = new BigInt(dividend);
+        divisor = new BigInt(divisor);
+        int remainderLeftMostSetBit = remainder.getLeftMostSetBit();
+        int newRemainderLeftMostSetBit;
+        int divisorLeftMostSetBit = divisor.getLeftMostSetBit();
+
+        if (remainderLeftMostSetBit > divisorLeftMostSetBit) {
+            divisor.shiftLeft(remainderLeftMostSetBit - divisorLeftMostSetBit);
+        }
+
+        while (remainderLeftMostSetBit >= divisorLeftMostSetBit) {
+//            remainder.xor(divisor);
+            remainder.xor2(divisor);
+            newRemainderLeftMostSetBit = remainder.getLeftMostSetBit();
+            divisor.shiftRight(remainderLeftMostSetBit - newRemainderLeftMostSetBit);
+            remainderLeftMostSetBit -= (remainderLeftMostSetBit - newRemainderLeftMostSetBit);
         }
         return remainder;
     }
@@ -64,7 +116,7 @@ public final class CyclicRedundancyCode {
         return encodedMessage.substring(0, encodedMessage.length() - (generatorPolynomial.length() - 1));
     }
 
-    public static double getProbabilityOfSuccess(int iterations, double p, int messageBitSize, String generatorPolynomial) {
+    public static double getSuccessRate(int iterations, double p, int messageBitSize, String generatorPolynomial) {
         String message = SyntheticDataGenerator.getRandomWord(messageBitSize);
         String encodedMessage = encode(message, generatorPolynomial);
         int nbMessageWithIntegrity = 0;

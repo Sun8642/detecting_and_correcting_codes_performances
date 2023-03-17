@@ -6,6 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.math.BigInteger;
+import math.BigInt;
 
 public class CyclicRedundancyCodeTest {
 
@@ -37,6 +38,20 @@ public class CyclicRedundancyCodeTest {
     public void encodeBigInteger(String expected, String message, String generatorPolynomial) {
         Assertions.assertEquals(new BigInteger(expected, 2),
                 CyclicRedundancyCode.encode(new BigInteger(message, 2), new BigInteger(generatorPolynomial, 2)));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "1011010,10110,101",
+            "10110100,101101,101",
+            "100100001,100100,1101",
+            "10011101100,10011101,1001",
+            "1101010000000010111110,110101,11000000000000101"
+    })
+    public void encodeBigInt(String expected, String message, String generatorPolynomial) {
+        BigInt encodedMessage = new BigInt(Long.parseLong(message, 2));
+        CyclicRedundancyCode.encode(encodedMessage, new BigInt(Long.parseLong(generatorPolynomial, 2)));
+        Assertions.assertEquals(new BigInt(Long.parseLong(expected, 2)), encodedMessage);
     }
 
     @Test

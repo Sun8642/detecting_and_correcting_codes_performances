@@ -4,15 +4,31 @@ import java.math.BigInteger;
 import java.util.BitSet;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import test.BigInt;
+import math.BigInt;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BitUtil {
 
-    public static int leftMostSetBit(int number) {
+    public static int leftMostSetBit(long number) {
         int posLeftMostSetBit = 0;
         while (number > 0) {
             number = number >> 1;
+            posLeftMostSetBit++;
+        }
+        return posLeftMostSetBit;
+    }
+
+    public static int leftMostSetBit(StringBuilder number, int leftStartingPos) {
+        int posLeftMostSetBit = leftStartingPos;
+        while (posLeftMostSetBit > 0 && number.charAt(number.length() - posLeftMostSetBit) == '0') {
+            posLeftMostSetBit--;
+        }
+        return posLeftMostSetBit;
+    }
+
+    public static int leftMostSetBit(String number, int leftStartingPos) {
+        int posLeftMostSetBit = leftStartingPos;
+        while (leftStartingPos > 0 && number.charAt(number.length() - posLeftMostSetBit) == '0') {
             posLeftMostSetBit++;
         }
         return posLeftMostSetBit;

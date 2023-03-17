@@ -2,6 +2,7 @@ package code;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import math.BigInt;
 import util.ProbabilityError;
 import util.SyntheticDataGenerator;
 
@@ -27,6 +28,18 @@ public final class ParityBitCode {
         return message.bitCount() % 2 == 0 ? message : message.add(BigInteger.ONE);
     }
 
+    public static void encode(BigInt message) {
+        message.shiftLeft(1);
+        if (message.getBitCount() % 2 != 0) {
+            message.add(1);
+        }
+    }
+
+    public static long encode(long message) {
+        message <<= 1;
+        return Long.bitCount(message) % 2 == 0 ? message : (message + 1);
+    }
+
     public static String decode(String encodedMessage) {
         if (isCorrupted(encodedMessage)) {
             throw new RuntimeException("Could not decode message, the encoded message is corrupted");
@@ -50,7 +63,14 @@ public final class ParityBitCode {
     }
 
     private static boolean isNumberOfOneEven(String message) {
-        return message.chars().filter(ch -> ch == '1').count() % 2 == 0;
+        int numberOfOneCount = 0;
+        int messageLength = message.length();
+        for (int i = 0; i < messageLength; i++) {
+            if (message.charAt(i) == '1') {
+                numberOfOneCount++;
+            }
+        }
+        return numberOfOneCount % 2 == 0;
     }
 
     public static double getProbabilityOfSuccess(int iterations, double p, int messageBitSize) {

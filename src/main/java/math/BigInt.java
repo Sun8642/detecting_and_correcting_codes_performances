@@ -1,4 +1,4 @@
-package test;
+package math;
 
 /*
 Copyright (c) 2015-2016 The Huldra Project.
@@ -30,8 +30,10 @@ Never space after for or if or akin, it looks ugly.
 Bracketless loops may be on one line. For nested bracketless loops each should be indented on a new line.
 */
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.SplittableRandom;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -85,6 +87,18 @@ public class BigInt extends Number implements Comparable<BigInt> {
         return 0;
     }
 
+    public int getLeastSignificantInt() {
+        return dig[0];
+    }
+
+    public int getBitCount() {
+        int bitCount = 0;
+        for (int i = 0; i < len; i++) {
+            bitCount += Integer.bitCount(dig[i]);
+        }
+        return bitCount;
+    }
+
     public final int[] getDig() {
         return dig;
     }
@@ -104,6 +118,75 @@ public class BigInt extends Number implements Comparable<BigInt> {
             dig[len - 1] = rnd.nextInt();
         } else {
             dig[len - 1] = rnd.nextInt() & ((1 << (numBits % 32)) - 1);
+        }
+    }
+
+    public BigInt(int numBits, SplittableRandom rnd) {
+        if (numBits <= 0)
+            throw new IllegalArgumentException("numBits must be non-negative");
+        sign = 1;
+        len = (int) (((long) numBits + 31) / 32); // avoid overflow
+        dig = new int[len];
+
+        for (int i = 0; i < len - 1; i++) {
+            dig[i] = rnd.nextInt();
+        }
+
+        if (numBits % 32 == 0) {
+            dig[len - 1] = rnd.nextInt();
+        } else {
+            dig[len - 1] = rnd.nextInt() & ((1 << (numBits % 32)) - 1);
+        }
+    }
+
+    public BigInt(BigInt bigInt) {
+        len = bigInt.len;
+        sign = bigInt.sign;
+        dig = new int[len];
+        System.arraycopy(bigInt.dig, 0, dig, 0, len);
+    }
+
+    public static BigInt from(BigInteger bigInteger) {
+        //BigInteger.mag is reversed compared to BigInt
+        byte[] bytes = bigInteger.toByteArray();
+        int i = bytes.length - 1;
+        byte[] bytes2 = new byte[bytes.length];
+        for (byte aByte : bytes) {
+            bytes2[i] = aByte;
+            i--;
+        }
+        return new BigInt(1, bytes2, bytes.length);
+    }
+
+    public void xor2(BigInt mask) {
+        if (mask.len > len) {
+            final int[] newDig = new int[mask.len];
+            System.arraycopy(mask.dig, 0, newDig, 0, mask.len);
+            for (int i = 0; i < len; i++) {
+                newDig[i] ^= dig[i];
+            }
+            dig = newDig;
+            len = mask.len;
+        } else {
+            for (int i = 0; i < mask.len; i++) {
+                dig[i] ^= mask.dig[i];
+            }
+        }
+    }
+
+    public void or2(BigInt mask) {
+        if (mask.len > len) {
+            final int[] newDig = new int[mask.len];
+            System.arraycopy(mask.dig, 0, newDig, 0, mask.len);
+            for (int i = 0; i < len; i++) {
+                newDig[i] |= dig[i];
+            }
+            dig = newDig;
+            len = mask.len;
+        } else {
+            for (int i = 0; i < mask.len; i++) {
+                dig[i] |= mask.dig[i];
+            }
         }
     }
 
