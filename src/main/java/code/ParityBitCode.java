@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import math.BigInt;
 import util.ProbabilityError;
+import util.StringUtil;
 import util.SyntheticDataGenerator;
 
 import java.math.BigInteger;
@@ -63,14 +64,7 @@ public final class ParityBitCode {
     }
 
     private static boolean isNumberOfOneEven(String message) {
-        int numberOfOneCount = 0;
-        int messageLength = message.length();
-        for (int i = 0; i < messageLength; i++) {
-            if (message.charAt(i) == '1') {
-                numberOfOneCount++;
-            }
-        }
-        return numberOfOneCount % 2 == 0;
+        return StringUtil.binaryBitCount(message) % 2 == 0;
     }
 
     public static double getProbabilityOfSuccess(int iterations, double p, int messageBitSize) {

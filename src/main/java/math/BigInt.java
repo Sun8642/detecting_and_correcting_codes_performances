@@ -190,6 +190,37 @@ public class BigInt extends Number implements Comparable<BigInt> {
         }
     }
 
+    public void insertBit(int bitPosition, boolean bitSet) {
+//        for (int i = getLeftMostSetBit() - 1; i >= bitPosition; i--) {
+//            if (testBit(i)) {
+//                setBit(i + 1);
+//            } else {
+//                clearBit(i + 1);
+//            }
+//        }
+//        if (bitSet) {
+//            setBit(bitPosition);
+//        } else {
+//            clearBit(bitPosition);
+//        }
+        BigInt mask = new BigInt(1L);
+        mask.shiftLeft(bitPosition);
+        mask.sub(1);
+        BigInt rightVal = new BigInt(this);
+        rightVal.and(mask);
+
+        sub(rightVal);
+        shiftLeft(1);
+        add(rightVal);
+        if (bitSet) {
+            setBit(bitPosition);
+        }
+
+        /*BigInteger mask = BigInteger.ONE.shiftLeft(bitPosition).subtract(BigInteger.ONE);
+        BigInteger rightVal = bigInteger.and(mask);
+        return bigInteger.subtract(rightVal).shiftLeft(1).add(rightVal).add(bitSet ? BigInteger.ONE.shiftLeft(bitPosition) : BigInteger.ZERO);*/
+    }
+
     /*** <Constructors> ***/
     /**
      * Creates a BigInt from the given parameters.

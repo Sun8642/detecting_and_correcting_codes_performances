@@ -90,10 +90,9 @@ public final class HammingCode {
 
         //Transform block into coded block with all the redundancy bit initialized at 0 (to have the final positions of non redundancy bits)
         for (int i = 0; i < numberOfRedundancyBitsToAdd; i++) {
-            BitUtil.insertBit(message, (int) (Math.pow(2.d, i)) - 1, false);
+            message.insertBit((int) (Math.pow(2.d, i)) - 1, false);
         }
 
-        BigInt tmp;
         int leftMostSetBit = message.getLeftMostSetBit();
 
         //Replace redundancy bits if needed
@@ -112,9 +111,7 @@ public final class HammingCode {
             }
             if ((parity && numberOfOneForBitPosition % 2 == 1) || (!parity && numberOfOneForBitPosition % 2 == 0)) {
                 //The redundancy bit need to be 1
-                tmp = new BigInt(0);
-                tmp.setBit(bitPosition - 1);
-                message.or2(tmp);
+                message.setBit(bitPosition - 1);
             }
         }
     }

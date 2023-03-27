@@ -12,13 +12,6 @@ import math.BigInt;
 
 public class BitUtilTest {
 
-    @Test
-    public void aze() {
-        BigInt bigInt = new BigInt(32, new Random());
-        bigInt = new BigInt(31, new Random());
-        bigInt = new BigInt(33, new Random());
-    }
-
     @ParameterizedTest
     @CsvSource({
             "0,0",
@@ -59,14 +52,17 @@ public class BitUtilTest {
     @ParameterizedTest
     @CsvSource({
             "10100,1000,2,true",
+            "111011,11111,2,false",
             "10001,1000,0,true",
             "10000,1000,0,false",
             "10101010,1001010,5,true",
-            "100010,10,5,true",
-            "10,10,5,false",
+            "100010,00010,5,true",
+            "000010,00010,5,false",
     })
-    public void insertBit(String expected, String binaryBigInteger, int bitPosition, boolean bitSet) {
-        Assertions.assertEquals(new BigInteger(expected, 2), BitUtil.insertBit(new BigInteger(binaryBigInteger, 2), bitPosition, bitSet));
+    public void insertBitStringBuilder(String expected, String binaryString, int bitPosition, boolean bitSet) {
+        StringBuilder binaryStringBuilder = new StringBuilder(binaryString);
+        BitUtil.insertBit(binaryStringBuilder, bitPosition, bitSet);
+        Assertions.assertEquals(expected, binaryStringBuilder.toString());
     }
 
     @ParameterizedTest
@@ -78,11 +74,8 @@ public class BitUtilTest {
             "100010,10,5,true",
             "10,10,5,false",
     })
-    public void insertBitBigInt(String expected, String binaryBigInt, int bitPosition, boolean bitSet) {
-        BigInt expectedBigInt = new BigInt(Long.parseLong(expected, 2));
-        BigInt binaryBigInt2 = new BigInt(Long.parseLong(binaryBigInt, 2));
-        BitUtil.insertBit(binaryBigInt2, bitPosition, bitSet);
-        Assertions.assertEquals(expectedBigInt, binaryBigInt2);
+    public void insertBitBigInteger(String expected, String binaryBigInteger, int bitPosition, boolean bitSet) {
+        Assertions.assertEquals(new BigInteger(expected, 2), BitUtil.insertBit(new BigInteger(binaryBigInteger, 2), bitPosition, bitSet));
     }
 
     @ParameterizedTest

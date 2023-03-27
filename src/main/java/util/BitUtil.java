@@ -18,22 +18,6 @@ public final class BitUtil {
         return posLeftMostSetBit;
     }
 
-    public static int leftMostSetBit(StringBuilder number, int leftStartingPos) {
-        int posLeftMostSetBit = leftStartingPos;
-        while (posLeftMostSetBit > 0 && number.charAt(number.length() - posLeftMostSetBit) == '0') {
-            posLeftMostSetBit--;
-        }
-        return posLeftMostSetBit;
-    }
-
-    public static int leftMostSetBit(String number, int leftStartingPos) {
-        int posLeftMostSetBit = leftStartingPos;
-        while (leftStartingPos > 0 && number.charAt(number.length() - posLeftMostSetBit) == '0') {
-            posLeftMostSetBit++;
-        }
-        return posLeftMostSetBit;
-    }
-
     public static boolean isPowerOfTwo(int number) {
         return (number != 0) && (number & (number - 1)) == 0;
     }
@@ -42,25 +26,14 @@ public final class BitUtil {
         return !(isPowerOfTwo(number));
     }
 
+    public static void insertBit(StringBuilder binaryStringBuilder, int bitPosition, boolean bitSet) {
+        binaryStringBuilder.insert(binaryStringBuilder.length() - bitPosition, bitSet ? '1' : '0');
+    }
+
     public static BigInteger insertBit(BigInteger bigInteger, int bitPosition, boolean bitSet) {
         BigInteger mask = BigInteger.ONE.shiftLeft(bitPosition).subtract(BigInteger.ONE);
         BigInteger rightVal = bigInteger.and(mask);
         return bigInteger.subtract(rightVal).shiftLeft(1).add(rightVal).add(bitSet ? BigInteger.ONE.shiftLeft(bitPosition) : BigInteger.ZERO);
-    }
-
-    public static void insertBit(BigInt bigInt, int bitPosition, boolean bitSet) {
-        for (int i = bigInt.getLeftMostSetBit() - 1; i >= bitPosition; i--) {
-            if (bigInt.testBit(i)) {
-                bigInt.setBit(i + 1);
-            } else {
-                bigInt.clearBit(i + 1);
-            }
-        }
-        if (bitSet) {
-            bigInt.setBit(bitPosition);
-        } else {
-            bigInt.clearBit(bitPosition);
-        }
     }
 
     public static long insertBit(long number, int bitPosition, boolean bitSet) {

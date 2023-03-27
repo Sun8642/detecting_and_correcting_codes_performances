@@ -2,6 +2,7 @@ package benchmark;
 
 import code.CyclicRedundancyCode;
 import java.math.BigInteger;
+import java.util.SplittableRandom;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -22,6 +23,8 @@ import util.SyntheticDataGenerator;
 @Measurement(iterations = 5, time = 60, timeUnit = TimeUnit.MILLISECONDS)
 @Fork(value = 1)
 public class CyclicRedundancyCheckBenchmark {
+
+    private final SplittableRandom splittableRandom = new SplittableRandom();
 
     private final String message = "100100110110";
     private final String generatorPolynomial = "1001";
@@ -49,8 +52,18 @@ public class CyclicRedundancyCheckBenchmark {
     }
 
     @Benchmark
+    public String encodeRandom12BitsString() {
+        return CyclicRedundancyCode.encode(SyntheticDataGenerator.getRandomSplittableWord(12), generatorPolynomial);
+    }
+
+    @Benchmark
     public String encodeBigMessageString() {
         return CyclicRedundancyCode.encode(bigMsg, crc32);
+    }
+
+    @Benchmark
+    public String encodeRandom12000BitsString() {
+        return CyclicRedundancyCode.encode(SyntheticDataGenerator.getRandomSplittableWord(12000), crc32);
     }
 
     @Benchmark
@@ -69,7 +82,17 @@ public class CyclicRedundancyCheckBenchmark {
     }
 
     @Benchmark
+    public void encodeRandom12BitsBigInt() {
+        CyclicRedundancyCode.encode(new BigInt(12, splittableRandom), new BigInt(generatorPolynomialLong));
+    }
+
+    @Benchmark
     public void encodeBigMessageBigInt() {
         CyclicRedundancyCode.encode(new BigInt(bigMsgBigInt), new BigInt(crc32BigInt));
+    }
+
+    @Benchmark
+    public void encodeRandom12000BitsBigInt() {
+        CyclicRedundancyCode.encode(new BigInt(12000, splittableRandom), new BigInt(crc32BigInt));
     }
 }

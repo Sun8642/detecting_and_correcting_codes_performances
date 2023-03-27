@@ -3,6 +3,7 @@ package code;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import math.BigInt;
+import util.BitUtil;
 import util.SyntheticDataGenerator;
 
 import java.math.BigInteger;
@@ -99,30 +100,19 @@ public final class InternetChecksum {
     }
 
     private static BigInt getSumOfWords(BigInt message) {
-        int length = ((int) Math.ceil((float) message.getLeftMostSetBit() / 16)) * 16;
-        BigInt result = new BigInt(0L);
-        BigInt messageCopy = new BigInt(message);
-        //calculate sum of each segment of 16 bits
-        while (length > 16) {
-            length -= 16;
-            result.add((messageCopy.getLeastSignificantInt() & 0xffff));
-            messageCopy.shiftRight(16);
+        long result = 0;
+        for (int i = 0; i < message.getDig().length; i++) {
+            result += message.getDig()[i];
         }
-        result.add(messageCopy.getLeastSignificantInt());
 
-        //We must add all the bits in overflow (all the bits that are in position greater than 16)
-        int leftMostSetBit = result.getLeftMostSetBit();
-        int tmp;
-        while (leftMostSetBit > 16) {
-            tmp = result.getLeastSignificantInt() & 0xffff;
-            result.shiftRight(16);
-            result.add(tmp);
-            leftMostSetBit = result.getLeftMostSetBit();
+        while (BitUtil.leftMostSetBit(result) > 16) {
+            result = (result >> 16) + (result & 0xffff);
         }
-        return result;
+
+        return new BigInt(result);
     }
 
-    public static double getProbabilityOfSuccess(int iterations, double p, int messageBitSize) {
+    public static double getErrorDetectionRate(int iterations, double p, int messageBitSize) {
         String message = SyntheticDataGenerator.getRandomWord(messageBitSize);
         String encodedMessage = InternetChecksum.encode(message);
         int nbMessageWithIntegrity = 0;

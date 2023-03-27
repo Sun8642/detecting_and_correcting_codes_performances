@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import math.BigInt;
 import util.BitUtil;
+import util.StringBuilderUtil;
+import util.StringUtil;
 import util.SyntheticDataGenerator;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -12,7 +14,7 @@ public final class CyclicRedundancyCode {
 
     public static String encode(String message, String generatorPolynomial) {
         //Multiply Ps by Xr
-        String encodedMessage = message + "0".repeat(generatorPolynomial.length() - 1);
+        String encodedMessage = StringUtil.binaryLeftShift(message, generatorPolynomial.length() - 1);
 
         return message + getPolynomialArithmeticModulo2(encodedMessage, generatorPolynomial);
     }
@@ -36,8 +38,8 @@ public final class CyclicRedundancyCode {
 
     public static String getPolynomialArithmeticModulo2(String dividend, String divisor) {
         StringBuilder remainder = new StringBuilder(dividend);
-        int remainderLeftMostSetBit = BitUtil.leftMostSetBit(remainder, remainder.length());
-        int divisorLeftMostSetBit = BitUtil.leftMostSetBit(divisor, divisor.length());
+        int remainderLeftMostSetBit = StringBuilderUtil.binaryLeftMostSetBit(remainder, remainder.length());
+        int divisorLeftMostSetBit = StringUtil.binaryLeftMostSetBit(divisor, divisor.length());
 
         int i, j;
         while (remainderLeftMostSetBit >= divisorLeftMostSetBit) {
@@ -49,7 +51,7 @@ public final class CyclicRedundancyCode {
                 }
                 i++;
             }
-            remainderLeftMostSetBit = BitUtil.leftMostSetBit(remainder, remainderLeftMostSetBit - 1);
+            remainderLeftMostSetBit = StringBuilderUtil.binaryLeftMostSetBit(remainder, remainderLeftMostSetBit - 1);
         }
         return remainder.substring(remainder.length() - divisor.length() + 1, remainder.length());
     }
