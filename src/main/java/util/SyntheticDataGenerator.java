@@ -15,17 +15,7 @@ public final class SyntheticDataGenerator {
     private static final SplittableRandom SPLITTABLE_RANDOM = new SplittableRandom();
 
     public static String getRandomWord(int numberOfBits) {
-        String s = Integer.toBinaryString((int) Math.floor(Math.random() * (1 << numberOfBits)));
-        return s.length() == numberOfBits ? s : "0".repeat(numberOfBits - s.length()) + s;
-    }
-
-    public static String getRandomWord2(int numberOfBits) {
-        String s = Integer.toBinaryString(RANDOM.nextInt() & ((1 << numberOfBits) - 1));
-        return s.length() == numberOfBits ? s : "0".repeat(numberOfBits - s.length()) + s;
-    }
-
-    public static String getRandomSplittableWord(int numberOfBits) {
-        String s = new BigInt(numberOfBits, SPLITTABLE_RANDOM).toString();
+        String s = new BigInteger(numberOfBits, RANDOM).toString(2);
         return s.length() == numberOfBits ? s : "0".repeat(numberOfBits - s.length()) + s;
     }
 
@@ -44,11 +34,6 @@ public final class SyntheticDataGenerator {
     public static BitSet getBitsetRandomWord(int numberOfBits) {
         return BitSet.valueOf(new long[]{(long) Math.floor(Math.random() * (1 << numberOfBits))});
     }
-
-    //a bit faster when numberOfBits is very low
-//    public static String getRandomWord2(int numberOfBits) {
-//        return Integer.toBinaryString((int) Math.floor(Math.random() * (1 << numberOfBits)) + (1 << numberOfBits)).substring(1);
-//    }
 
     public static String corruptWord(String message, double p) {
         StringBuilder stringBuilder = new StringBuilder(message);

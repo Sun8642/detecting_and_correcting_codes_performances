@@ -67,7 +67,7 @@ public final class ParityBitCode {
         return StringUtil.binaryBitCount(message) % 2 == 0;
     }
 
-    public static double getProbabilityOfSuccess(int iterations, double p, int messageBitSize) {
+    public static double getErrorDetectionRate(int iterations, double p, int messageBitSize) {
         String message = SyntheticDataGenerator.getRandomWord(messageBitSize);
         String encodedMessage = encode(message);
         int nbMessageWithIntegrity = 0;

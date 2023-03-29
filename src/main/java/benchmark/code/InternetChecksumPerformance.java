@@ -1,18 +1,18 @@
-package benchmark.binary.operation;
+package benchmark.code;
 
 import benchmark.Constant;
+import code.InternetChecksum;
 import java.math.BigInteger;
 import java.util.Arrays;
 import javax.swing.JFrame;
 import math.BigInt;
 import org.math.plot.Plot2DPanel;
 import org.math.plot.PlotPanel;
-import util.StringUtil;
 import util.SyntheticDataGenerator;
 
-public class BitCountPerformance {
+public class InternetChecksumPerformance {
 
-    private static final int ITERATIONS = 10000;
+    private static final int ITERATIONS = 100;
 
     public static void main(String[] args) {
         double[] numberOfBits = numberOfBits();
@@ -20,12 +20,12 @@ public class BitCountPerformance {
         Plot2DPanel plot = new Plot2DPanel();
 
         plot.setAxisLabels("Number of bits", "Time for " + ITERATIONS + " executions (ms)");
-        plot.addLinePlot("BigInt", numberOfBits, bitCountBigIntExecutionTimes());
-        plot.addLinePlot("BigInteger", numberOfBits, bitCountBigIntegerExecutionTimes());
-        plot.addLinePlot("StringBuilder", numberOfBits, bitCountStringBuilderExecutionTimes());
+//        plot.addLinePlot("BigInt", numberOfBits, internetChecksumBigIntExecutionTimes());
+//        plot.addLinePlot("BigInteger", numberOfBits, internetChecksumBigIntegerExecutionTimes());
+        plot.addLinePlot("String", numberOfBits, internetChecksumStringExecutionTimes());
         plot.addLegend(PlotPanel.EAST);
 
-        JFrame frame = new JFrame("BitCount execution time");
+        JFrame frame = new JFrame("Internet checksum execution time");
         frame.setContentPane(plot);
         frame.setVisible(true);
         frame.setSize(1000, 600);
@@ -41,18 +41,18 @@ public class BitCountPerformance {
         return numberOfBitsArray;
     }
 
-    public static double[] bitCountBigIntExecutionTimes() {
+    private static double[] internetChecksumBigIntExecutionTimes() {
         double[] executionTime = new double[100];
         long startingTime;
         long endingTime;
         BigInt src;
         int numberOfBits = 1000;
 
-        src = new BigInt(numberOfBits, Constant.SPLITTABLE_RANDOM);
+        src = new BigInt(10, Constant.SPLITTABLE_RANDOM);
 
         //Warmup the jvm
-        for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
-            src.getBitCount();
+        for (int i = 0; i < 10; i++) {
+            InternetChecksum.encode(src);
         }
 
         for (int j = 0; j < 100; j++) {
@@ -60,7 +60,7 @@ public class BitCountPerformance {
 
             startingTime = System.nanoTime();
             for (int i = 0; i < ITERATIONS; i++) {
-                src.getBitCount();
+                InternetChecksum.encode(src);
             }
             endingTime = System.nanoTime();
             executionTime[j] = ((double) endingTime - startingTime) / Constant.NS_TO_MS;
@@ -70,46 +70,47 @@ public class BitCountPerformance {
         return executionTime;
     }
 
-    public static double[] bitCountBigIntegerExecutionTimes() {
+    private static double[] internetChecksumBigIntegerExecutionTimes() {
         double[] executionTime = new double[100];
         long startingTime;
         long endingTime;
         BigInteger src;
         int numberOfBits = 1000;
-        src = new BigInteger(numberOfBits, Constant.RANDOM);
+
+        src = new BigInteger(10, Constant.RANDOM);
 
         //Warmup the jvm
-        for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
-            src.bitCount();
+        for (int i = 0; i < 10; i++) {
+            InternetChecksum.encode(src);
         }
 
         for (int j = 0; j < 100; j++) {
-//            numberOfBits = (int) Math.pow(10.d, j + 1.d);
             src = new BigInteger(numberOfBits, Constant.RANDOM);
 
             startingTime = System.nanoTime();
             for (int i = 0; i < ITERATIONS; i++) {
-                src.bitCount();
+                InternetChecksum.encode(src);
             }
             endingTime = System.nanoTime();
             executionTime[j] = ((double) endingTime - startingTime) / Constant.NS_TO_MS;
             numberOfBits += 1000;
         }
-        System.out.println("exec time biginteger : " + Arrays.toString(executionTime));
+        System.out.println("exec time BigInteger : " + Arrays.toString(executionTime));
         return executionTime;
     }
 
-    public static double[] bitCountStringBuilderExecutionTimes() {
+    private static double[] internetChecksumStringExecutionTimes() {
         double[] executionTime = new double[100];
         long startingTime;
         long endingTime;
         String src;
         int numberOfBits = 1000;
-        src = SyntheticDataGenerator.getRandomWord(numberOfBits);
+
+        src = SyntheticDataGenerator.getRandomWord(10);
 
         //Warmup the jvm
-        for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
-            StringUtil.binaryBitCount(src);
+        for (int i = 0; i < 10; i++) {
+            InternetChecksum.encode(src);
         }
 
         for (int j = 0; j < 100; j++) {
@@ -117,7 +118,7 @@ public class BitCountPerformance {
 
             startingTime = System.nanoTime();
             for (int i = 0; i < ITERATIONS; i++) {
-                StringUtil.binaryBitCount(src);
+                InternetChecksum.encode(src);
             }
             endingTime = System.nanoTime();
             executionTime[j] = ((double) endingTime - startingTime) / Constant.NS_TO_MS;
@@ -126,4 +127,5 @@ public class BitCountPerformance {
         System.out.println("exec time String : " + Arrays.toString(executionTime));
         return executionTime;
     }
+
 }

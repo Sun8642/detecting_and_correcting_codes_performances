@@ -3,20 +3,14 @@ package benchmark.binary.operation;
 import benchmark.Constant;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Random;
-import java.util.SplittableRandom;
 import javax.swing.JFrame;
 import math.BigInt;
 import org.math.plot.Plot2DPanel;
 import org.math.plot.PlotPanel;
 import util.BitUtil;
-import util.StringUtil;
 import util.SyntheticDataGenerator;
 
 public class InsertBitAtPosPerformance {
-
-    private static final Random RANDOM = new Random();
-    private static final SplittableRandom SPLITTABLE_RANDOM = new SplittableRandom();
 
     private static final int ITERATIONS = 1000;
 
@@ -57,14 +51,14 @@ public class InsertBitAtPosPerformance {
 
         //Warmup the jvm
         for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
-            src = new BigInt(numberOfBits, SPLITTABLE_RANDOM);
+            src = new BigInt(numberOfBits, Constant.SPLITTABLE_RANDOM);
             src.insertBit(0, false);
         }
 
         for (int j = 0; j < 100; j++) {
             iterationTime = 0;
             for (int i = 0; i < ITERATIONS; i++) {
-                src = new BigInt(numberOfBits, SPLITTABLE_RANDOM);
+                src = new BigInt(numberOfBits, Constant.SPLITTABLE_RANDOM);
                 startingTime = System.nanoTime();
                 src.insertBit(0, false);
                 endingTime = System.nanoTime();
@@ -82,7 +76,7 @@ public class InsertBitAtPosPerformance {
         long startingTime;
         long endingTime;
         int numberOfBits = 1000;
-        BigInteger src = new BigInteger(10, RANDOM);
+        BigInteger src = new BigInteger(10, Constant.RANDOM);
         long iterationTime;
 
         //Warmup the jvm
@@ -93,7 +87,7 @@ public class InsertBitAtPosPerformance {
         for (int j = 0; j < 100; j++) {
             iterationTime = 0;
             for (int i = 0; i < ITERATIONS; i++) {
-                src = new BigInteger(numberOfBits, RANDOM);
+                src = new BigInteger(numberOfBits, Constant.RANDOM);
                 startingTime = System.nanoTime();
                 BitUtil.insertBit(src, 0, false);
                 endingTime = System.nanoTime();
@@ -116,14 +110,14 @@ public class InsertBitAtPosPerformance {
 
         //Warmup the jvm
         for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
-            src = new StringBuilder(SyntheticDataGenerator.getRandomSplittableWord(10));
+            src = new StringBuilder(SyntheticDataGenerator.getRandomWord(10));
             BitUtil.insertBit(src, 0, false);
         }
 
         for (int j = 0; j < 100; j++) {
             iterationTime = 0;
             for (int i = 0; i < ITERATIONS; i++) {
-                src = new StringBuilder(SyntheticDataGenerator.getRandomSplittableWord(numberOfBits));
+                src = new StringBuilder(SyntheticDataGenerator.getRandomWord(numberOfBits));
                 startingTime = System.nanoTime();
                 BitUtil.insertBit(src, numberOfBits, false);
                 endingTime = System.nanoTime();

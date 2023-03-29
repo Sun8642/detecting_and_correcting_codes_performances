@@ -118,7 +118,7 @@ public final class CyclicRedundancyCode {
         return encodedMessage.substring(0, encodedMessage.length() - (generatorPolynomial.length() - 1));
     }
 
-    public static double getSuccessRate(int iterations, double p, int messageBitSize, String generatorPolynomial) {
+    public static double getErrorDetectionRate(int iterations, double p, int messageBitSize, String generatorPolynomial) {
         String message = SyntheticDataGenerator.getRandomWord(messageBitSize);
         String encodedMessage = encode(message, generatorPolynomial);
         int nbMessageWithIntegrity = 0;

@@ -29,7 +29,7 @@ public class CyclicRedundancyCheckBenchmark {
     private final String message = "100100110110";
     private final String generatorPolynomial = "1001";
 
-    private final String bigMsg = SyntheticDataGenerator.getRandomSplittableWord(1500 * 8);
+    private final String bigMsg = SyntheticDataGenerator.getRandomWord(1500 * 8);
     private final String crc32 = "100000100110000010001110110110111";
 
     private final BigInteger messageBigInteger = new BigInteger("100100110110", 2);
@@ -53,7 +53,7 @@ public class CyclicRedundancyCheckBenchmark {
 
     @Benchmark
     public String encodeRandom12BitsString() {
-        return CyclicRedundancyCode.encode(SyntheticDataGenerator.getRandomSplittableWord(12), generatorPolynomial);
+        return CyclicRedundancyCode.encode(SyntheticDataGenerator.getRandomWord(12), generatorPolynomial);
     }
 
     @Benchmark
@@ -63,7 +63,7 @@ public class CyclicRedundancyCheckBenchmark {
 
     @Benchmark
     public String encodeRandom12000BitsString() {
-        return CyclicRedundancyCode.encode(SyntheticDataGenerator.getRandomSplittableWord(12000), crc32);
+        return CyclicRedundancyCode.encode(SyntheticDataGenerator.getRandomWord(12000), crc32);
     }
 
     @Benchmark

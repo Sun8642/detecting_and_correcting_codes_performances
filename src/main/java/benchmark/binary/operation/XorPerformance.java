@@ -3,8 +3,6 @@ package benchmark.binary.operation;
 import benchmark.Constant;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Random;
-import java.util.SplittableRandom;
 import javax.swing.JFrame;
 import math.BigInt;
 import org.math.plot.Plot2DPanel;
@@ -13,9 +11,6 @@ import util.StringBuilderUtil;
 import util.SyntheticDataGenerator;
 
 public class XorPerformance {
-
-    private static final Random RANDOM = new Random();
-    private static final SplittableRandom SPLITTABLE_RANDOM = new SplittableRandom();
 
     private static final int ITERATIONS = 10000;
 
@@ -54,8 +49,8 @@ public class XorPerformance {
         BigInt mask;
         int numberOfBits = 1000;
 
-        src = new BigInt(numberOfBits, SPLITTABLE_RANDOM);
-        mask = new BigInt(numberOfBits, SPLITTABLE_RANDOM);
+        src = new BigInt(numberOfBits, Constant.SPLITTABLE_RANDOM);
+        mask = new BigInt(numberOfBits, Constant.SPLITTABLE_RANDOM);
 
         //Warmup the jvm
         for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
@@ -63,8 +58,8 @@ public class XorPerformance {
         }
 
         for (int j = 0; j < 100; j++) {
-            src = new BigInt(numberOfBits, SPLITTABLE_RANDOM);
-            mask = new BigInt(numberOfBits, SPLITTABLE_RANDOM);
+            src = new BigInt(numberOfBits, Constant.SPLITTABLE_RANDOM);
+            mask = new BigInt(numberOfBits, Constant.SPLITTABLE_RANDOM);
 
             startingTime = System.nanoTime();
             for (int i = 0; i < ITERATIONS; i++) {
@@ -85,8 +80,8 @@ public class XorPerformance {
         BigInteger src;
         BigInteger mask;
         int numberOfBits = 1000;
-        src = new BigInteger(numberOfBits, RANDOM);
-        mask = new BigInteger(numberOfBits, RANDOM);
+        src = new BigInteger(numberOfBits, Constant.RANDOM);
+        mask = new BigInteger(numberOfBits, Constant.RANDOM);
 
         //Warmup the jvm
         for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
@@ -95,8 +90,8 @@ public class XorPerformance {
 
         for (int j = 0; j < 100; j++) {
 //            numberOfBits = (int) Math.pow(10.d, j + 1.d);
-            src = new BigInteger(numberOfBits, RANDOM);
-            mask = new BigInteger(numberOfBits, RANDOM);
+            src = new BigInteger(numberOfBits, Constant.RANDOM);
+            mask = new BigInteger(numberOfBits, Constant.RANDOM);
 
             startingTime = System.nanoTime();
             for (int i = 0; i < ITERATIONS; i++) {
@@ -117,8 +112,8 @@ public class XorPerformance {
         StringBuilder src;
         StringBuilder mask;
         int numberOfBits = 1000;
-        src = new StringBuilder(SyntheticDataGenerator.getRandomSplittableWord(numberOfBits));
-        mask = new StringBuilder(SyntheticDataGenerator.getRandomSplittableWord(numberOfBits));
+        src = new StringBuilder(SyntheticDataGenerator.getRandomWord(numberOfBits));
+        mask = new StringBuilder(SyntheticDataGenerator.getRandomWord(numberOfBits));
 
         //Warmup the jvm
         for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
@@ -126,8 +121,8 @@ public class XorPerformance {
         }
 
         for (int j = 0; j < 100; j++) {
-            src = new StringBuilder(SyntheticDataGenerator.getRandomSplittableWord(numberOfBits));
-            mask = new StringBuilder(SyntheticDataGenerator.getRandomSplittableWord(numberOfBits));
+            src = new StringBuilder(SyntheticDataGenerator.getRandomWord(numberOfBits));
+            mask = new StringBuilder(SyntheticDataGenerator.getRandomWord(numberOfBits));
 
             startingTime = System.nanoTime();
             for (int i = 0; i < ITERATIONS; i++) {

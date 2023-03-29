@@ -26,12 +26,12 @@ public class GenerateRandomNumberBenchmark {
 
     @Benchmark
     public String generateRandom12BitsString() {
-        return SyntheticDataGenerator.getRandomSplittableWord(12);
+        return SyntheticDataGenerator.getRandomWord(12);
     }
 
     @Benchmark
     public String generateRandom12000BitsString() {
-        return SyntheticDataGenerator.getRandomSplittableWord(1500 * 8);
+        return SyntheticDataGenerator.getRandomWord(1500 * 8);
     }
 
     @Benchmark

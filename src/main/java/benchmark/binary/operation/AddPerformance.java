@@ -3,17 +3,12 @@ package benchmark.binary.operation;
 import benchmark.Constant;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Random;
-import java.util.SplittableRandom;
 import javax.swing.JFrame;
 import math.BigInt;
 import org.math.plot.Plot2DPanel;
 import org.math.plot.PlotPanel;
 
 public class AddPerformance {
-
-    private static final Random RANDOM = new Random();
-    private static final SplittableRandom SPLITTABLE_RANDOM = new SplittableRandom();
 
     private static final int ADD_VALUE_BIT_COUNT = 16;
     private static final int ITERATIONS = 1000;
@@ -49,20 +44,20 @@ public class AddPerformance {
         long startingTime;
         long endingTime;
         BigInt src;
-        BigInt addValue = new BigInt(ADD_VALUE_BIT_COUNT, SPLITTABLE_RANDOM);
+        BigInt addValue = new BigInt(ADD_VALUE_BIT_COUNT, Constant.SPLITTABLE_RANDOM);
         int numberOfBits = 1000;
         long iterationTime;
 
         //Warmup the jvm
         for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
-            src = new BigInt(numberOfBits, SPLITTABLE_RANDOM);
+            src = new BigInt(numberOfBits, Constant.SPLITTABLE_RANDOM);
             src.add(addValue);
         }
 
         for (int j = 0; j < 100; j++) {
             iterationTime = 0;
             for (int i = 0; i < ITERATIONS; i++) {
-                src = new BigInt(numberOfBits, SPLITTABLE_RANDOM);
+                src = new BigInt(numberOfBits, Constant.SPLITTABLE_RANDOM);
                 startingTime = System.nanoTime();
                 src.add(addValue);
                 endingTime = System.nanoTime();
@@ -80,8 +75,8 @@ public class AddPerformance {
         long startingTime;
         long endingTime;
         int numberOfBits = 1000;
-        BigInteger src = new BigInteger(10, RANDOM);
-        BigInteger addValue = new BigInteger(ADD_VALUE_BIT_COUNT, RANDOM);
+        BigInteger src = new BigInteger(10, Constant.RANDOM);
+        BigInteger addValue = new BigInteger(ADD_VALUE_BIT_COUNT, Constant.RANDOM);
         long iterationTime;
 
         //Warmup the jvm
@@ -92,7 +87,7 @@ public class AddPerformance {
         for (int j = 0; j < 100; j++) {
             iterationTime = 0;
             for (int i = 0; i < ITERATIONS; i++) {
-                src = new BigInteger(numberOfBits, RANDOM);
+                src = new BigInteger(numberOfBits, Constant.RANDOM);
                 startingTime = System.nanoTime();
                 src.add(addValue);
                 endingTime = System.nanoTime();

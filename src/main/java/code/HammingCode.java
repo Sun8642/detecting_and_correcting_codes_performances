@@ -248,7 +248,7 @@ public final class HammingCode {
         return k >= 4 && BitUtil.isPowerOfTwo(k + numberOfRedundancyBitsToAdd(k) + 1);
     }
 
-    public static double[] getProbabilityOfSuccess(int iterations, double p, int messageBitSize) {
+    public static double[] getErrorDetectionRate(int iterations, double p, int messageBitSize) {
         String message = SyntheticDataGenerator.getRandomWord(messageBitSize);
         String encodedMessage = encode(message, true);
         int nbMessageWithIntegrity = 0;

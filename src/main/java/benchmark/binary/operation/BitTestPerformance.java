@@ -3,20 +3,14 @@ package benchmark.binary.operation;
 import benchmark.Constant;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Random;
-import java.util.SplittableRandom;
 import javax.swing.JFrame;
 import math.BigInt;
 import org.math.plot.Plot2DPanel;
 import org.math.plot.PlotPanel;
 import util.StringBuilderUtil;
-import util.StringUtil;
 import util.SyntheticDataGenerator;
 
 public class BitTestPerformance {
-
-    private static final Random RANDOM = new Random();
-    private static final SplittableRandom SPLITTABLE_RANDOM = new SplittableRandom();
 
     private static final int ITERATIONS = 1000000;
 
@@ -54,7 +48,7 @@ public class BitTestPerformance {
         BigInt src;
         int numberOfBits = 1000;
 
-        src = new BigInt(numberOfBits, SPLITTABLE_RANDOM);
+        src = new BigInt(numberOfBits, Constant.SPLITTABLE_RANDOM);
 
         //Warmup the jvm
         for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
@@ -62,7 +56,7 @@ public class BitTestPerformance {
         }
 
         for (int j = 0; j < 100; j++) {
-            src = new BigInt(numberOfBits, SPLITTABLE_RANDOM);
+            src = new BigInt(numberOfBits, Constant.SPLITTABLE_RANDOM);
 
             startingTime = System.nanoTime();
             for (int i = 0; i < ITERATIONS; i++) {
@@ -82,7 +76,7 @@ public class BitTestPerformance {
         long endingTime;
         BigInteger src;
         int numberOfBits = 1000;
-        src = new BigInteger(numberOfBits, RANDOM);
+        src = new BigInteger(numberOfBits, Constant.RANDOM);
 
         //Warmup the jvm
         for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
@@ -90,7 +84,7 @@ public class BitTestPerformance {
         }
 
         for (int j = 0; j < 100; j++) {
-            src = new BigInteger(numberOfBits, RANDOM);
+            src = new BigInteger(numberOfBits, Constant.RANDOM);
 
             startingTime = System.nanoTime();
             for (int i = 0; i < ITERATIONS; i++) {
@@ -110,7 +104,7 @@ public class BitTestPerformance {
         long endingTime;
         StringBuilder src;
         int numberOfBits = 1000;
-        src = new StringBuilder(SyntheticDataGenerator.getRandomSplittableWord(numberOfBits));
+        src = new StringBuilder(SyntheticDataGenerator.getRandomWord(numberOfBits));
 
         //Warmup the jvm
         for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
@@ -118,7 +112,7 @@ public class BitTestPerformance {
         }
 
         for (int j = 0; j < 100; j++) {
-            src = new StringBuilder(SyntheticDataGenerator.getRandomSplittableWord(numberOfBits));
+            src = new StringBuilder(SyntheticDataGenerator.getRandomWord(numberOfBits));
 
             startingTime = System.nanoTime();
             for (int i = 0; i < ITERATIONS; i++) {
