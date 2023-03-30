@@ -1,10 +1,8 @@
 package util;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class StringBuilderUtilTest {
 
@@ -13,10 +11,34 @@ public class StringBuilderUtilTest {
             "000,111,111",
             "111111,111000,000111",
             "111111,111000,111",
+            "111011,111000,11",
             "111111,111,111000",
+            "111011,11,111000",
     })
     public void binaryXor(String expected, StringBuilder binaryStringBuilder, StringBuilder mask) {
-        Assertions.assertEquals(expected, StringBuilderUtil.binaryXor(binaryStringBuilder, mask).toString());
+        StringBuilderUtil.binaryXor(binaryStringBuilder, mask);
+        Assertions.assertEquals(expected, binaryStringBuilder.toString());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "1100,1100,0",
+            "11000,1100,1",
+            "110000000,1100,5"
+    })
+    public void binaryLeftShift(String expected, StringBuilder binaryString, int leftShift) {
+        StringBuilderUtil.binaryLeftShift(binaryString, leftShift);
+        Assertions.assertEquals(expected, binaryString.toString());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "0,000000",
+            "3,101010",
+            "6,111111"
+    })
+    public void binaryBitCount(int expected, StringBuilder binaryString) {
+        Assertions.assertEquals(expected, StringBuilderUtil.binaryBitCount(binaryString));
     }
 
     @ParameterizedTest

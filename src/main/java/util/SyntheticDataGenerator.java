@@ -1,12 +1,13 @@
 package util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import math.BigInt;
+
 import java.math.BigInteger;
 import java.util.BitSet;
 import java.util.Random;
 import java.util.SplittableRandom;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import math.BigInt;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SyntheticDataGenerator {
@@ -17,6 +18,14 @@ public final class SyntheticDataGenerator {
     public static String getRandomWord(int numberOfBits) {
         String s = new BigInteger(numberOfBits, RANDOM).toString(2);
         return s.length() == numberOfBits ? s : "0".repeat(numberOfBits - s.length()) + s;
+    }
+
+    public static StringBuilder getRandomStringBuilderWord(int numberOfBits) {
+        StringBuilder s = new StringBuilder(new BigInteger(numberOfBits, RANDOM).toString(2));
+        if (s.length() != numberOfBits) {
+            s.insert(0, "0".repeat(numberOfBits - s.length()));
+        }
+        return s;
     }
 
     public static BigInteger getBigIntegerRandomWord(int numberOfBits) {

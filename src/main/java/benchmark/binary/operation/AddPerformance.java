@@ -1,12 +1,13 @@
 package benchmark.binary.operation;
 
 import benchmark.Constant;
-import java.math.BigInteger;
-import java.util.Arrays;
-import javax.swing.JFrame;
 import math.BigInt;
 import org.math.plot.Plot2DPanel;
 import org.math.plot.PlotPanel;
+
+import javax.swing.*;
+import java.math.BigInteger;
+import java.util.Arrays;
 
 public class AddPerformance {
 

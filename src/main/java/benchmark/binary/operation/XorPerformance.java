@@ -1,14 +1,15 @@
 package benchmark.binary.operation;
 
 import benchmark.Constant;
-import java.math.BigInteger;
-import java.util.Arrays;
-import javax.swing.JFrame;
 import math.BigInt;
 import org.math.plot.Plot2DPanel;
 import org.math.plot.PlotPanel;
 import util.StringBuilderUtil;
 import util.SyntheticDataGenerator;
+
+import javax.swing.*;
+import java.math.BigInteger;
+import java.util.Arrays;
 
 public class XorPerformance {
 
@@ -112,8 +113,8 @@ public class XorPerformance {
         StringBuilder src;
         StringBuilder mask;
         int numberOfBits = 1000;
-        src = new StringBuilder(SyntheticDataGenerator.getRandomWord(numberOfBits));
-        mask = new StringBuilder(SyntheticDataGenerator.getRandomWord(numberOfBits));
+        src = SyntheticDataGenerator.getRandomStringBuilderWord(numberOfBits);
+        mask = SyntheticDataGenerator.getRandomStringBuilderWord(numberOfBits);
 
         //Warmup the jvm
         for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
@@ -121,8 +122,8 @@ public class XorPerformance {
         }
 
         for (int j = 0; j < 100; j++) {
-            src = new StringBuilder(SyntheticDataGenerator.getRandomWord(numberOfBits));
-            mask = new StringBuilder(SyntheticDataGenerator.getRandomWord(numberOfBits));
+            src = SyntheticDataGenerator.getRandomStringBuilderWord(numberOfBits);
+            mask = SyntheticDataGenerator.getRandomStringBuilderWord(numberOfBits);
 
             startingTime = System.nanoTime();
             for (int i = 0; i < ITERATIONS; i++) {

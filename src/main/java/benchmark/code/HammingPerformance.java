@@ -2,13 +2,14 @@ package benchmark.code;
 
 import benchmark.Constant;
 import code.HammingCode;
-import java.math.BigInteger;
-import java.util.Arrays;
-import javax.swing.JFrame;
 import math.BigInt;
 import org.math.plot.Plot2DPanel;
 import org.math.plot.PlotPanel;
 import util.SyntheticDataGenerator;
+
+import javax.swing.*;
+import java.math.BigInteger;
+import java.util.Arrays;
 
 public class HammingPerformance {
 
@@ -22,7 +23,7 @@ public class HammingPerformance {
         plot.setAxisLabels("Number of bits", "Time for " + ITERATIONS + " executions (ms)");
         plot.addLinePlot("BigInt", numberOfBits, hammingBigIntExecutionTimes());
         plot.addLinePlot("BigInteger", numberOfBits, hammingBigIntegerExecutionTimes());
-        plot.addLinePlot("String", numberOfBits, hammingStringExecutionTimes());
+        plot.addLinePlot("StringBuilder", numberOfBits, hammingStringExecutionTimes());
         plot.addLegend(PlotPanel.EAST);
 
         JFrame frame = new JFrame("Hamming execution time");
@@ -48,11 +49,9 @@ public class HammingPerformance {
         BigInt src;
         int numberOfBits = 1000;
 
-        src = new BigInt(10, Constant.SPLITTABLE_RANDOM);
-
         //Warmup the jvm
         for (int i = 0; i < 10; i++) {
-            HammingCode.encode(src, true, 10);
+            HammingCode.encode(new BigInt(10, Constant.SPLITTABLE_RANDOM), true, 10);
         }
 
         for (int j = 0; j < 100; j++) {
@@ -103,18 +102,16 @@ public class HammingPerformance {
         double[] executionTime = new double[100];
         long startingTime;
         long endingTime;
-        String src;
+        StringBuilder src;
         int numberOfBits = 1000;
-
-        src = SyntheticDataGenerator.getRandomWord(10);
 
         //Warmup the jvm
         for (int i = 0; i < 10; i++) {
-            HammingCode.encode(src, true);
+            HammingCode.encode(SyntheticDataGenerator.getRandomStringBuilderWord(10), true);
         }
 
         for (int j = 0; j < 100; j++) {
-            src = SyntheticDataGenerator.getRandomWord(numberOfBits);
+            src = SyntheticDataGenerator.getRandomStringBuilderWord(numberOfBits);
 
             startingTime = System.nanoTime();
             for (int i = 0; i < ITERATIONS; i++) {
@@ -124,7 +121,7 @@ public class HammingPerformance {
             executionTime[j] = ((double) endingTime - startingTime) / Constant.NS_TO_MS;
             numberOfBits += 1000;
         }
-        System.out.println("exec time String : " + Arrays.toString(executionTime));
+        System.out.println("exec time StringBuilder : " + Arrays.toString(executionTime));
         return executionTime;
     }
 }

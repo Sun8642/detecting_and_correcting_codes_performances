@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import math.BigInt;
 import util.BitUtil;
-import util.SyntheticDataGenerator;
 
 import java.math.BigInteger;
 
@@ -15,8 +14,8 @@ public final class InternetChecksum {
     private static final BigInteger MASK_16_BITS = BigInteger.valueOf(0xffff);
     private static final BigInt MASK_16_BITS_BIG_INT = new BigInt(0xffff);
 
-    public static String encode(String message) {
-        return message + getChecksum(message);
+    public static void encode(StringBuilder message) {
+        message.append(getChecksum(message));
     }
 
     public static BigInteger encode(BigInteger message) {
@@ -33,14 +32,14 @@ public final class InternetChecksum {
         return (message << 16) + getChecksum(message);
     }
 
-    public static String decode(String encodedMessage) {
+    public static void decode(StringBuilder encodedMessage) {
         if (isCorrupted(encodedMessage)) {
             throw new RuntimeException("Could not decode message, the encoded message is corrupted");
         }
-        return encodedMessage.substring(0, encodedMessage.length() - 16);
+        encodedMessage.replace(encodedMessage.length() - 16, encodedMessage.length(), "");
     }
 
-    public static String getChecksum(String message) {
+    public static String getChecksum(StringBuilder message) {
         return Long.toBinaryString(getChecksumInt(message));
     }
 
@@ -55,7 +54,7 @@ public final class InternetChecksum {
         return sumOfWords;
     }
 
-    private static long getChecksumInt(String message) {
+    private static long getChecksumInt(StringBuilder message) {
         return (~getSumOfWords(message)) & 0xffff;
     }
 
@@ -63,13 +62,13 @@ public final class InternetChecksum {
         return (~getSumOfWords(message)) & 0xffff;
     }
 
-    public static boolean isCorrupted(String encodedMessage) {
-        return getSumOfWords(encodedMessage.substring(0, encodedMessage.length() - 16)) + Integer.parseInt(encodedMessage.substring(encodedMessage.length() - 16), 2) != 0xffff;
+    public static boolean isCorrupted(StringBuilder encodedMessage) {
+        return getSumOfWords(new StringBuilder(encodedMessage.substring(0, encodedMessage.length() - 16))) + Integer.parseInt(encodedMessage.substring(encodedMessage.length() - 16), 2) != 0xffff;
     }
 
-    private static long getSumOfWords(String message) {
+    private static long getSumOfWords(StringBuilder message) {
         //Works only if message.length() % 16 == 0
-        String[] words = message.split(REGEX_STRING_16_CHARS);
+        String[] words = message.toString().split(REGEX_STRING_16_CHARS);
         long checksum = Integer.parseInt(words[0], 2);
         for (int i = 1; i < words.length; i++) {
             checksum += Integer.parseInt(words[i], 2);
@@ -112,26 +111,26 @@ public final class InternetChecksum {
         return new BigInt(result);
     }
 
-    public static double getErrorDetectionRate(int iterations, double p, int messageBitSize) {
-        String message = SyntheticDataGenerator.getRandomWord(messageBitSize);
-        String encodedMessage = InternetChecksum.encode(message);
-        int nbMessageWithIntegrity = 0;
-        int nbCorruptedMessageCorrectlyDetected = 0;
-
-        String corruptedMessage;
-        for (int i = 0; i < iterations; i++) {
-            corruptedMessage = SyntheticDataGenerator.corruptWord(encodedMessage, p);
-            if (encodedMessage.equals(corruptedMessage)) {
-                nbMessageWithIntegrity++;
-            } else {
-                if (InternetChecksum.isCorrupted(corruptedMessage)) {
-                    nbCorruptedMessageCorrectlyDetected++;
-                }
-            }
-        }
-        if (iterations - nbMessageWithIntegrity == 0) {
-            return 1.d;
-        }
-        return (double) nbCorruptedMessageCorrectlyDetected / (iterations - nbMessageWithIntegrity);
-    }
+//    public static double getErrorDetectionRate(int iterations, double p, int messageBitSize) {
+//        String message = SyntheticDataGenerator.getRandomWord(messageBitSize);
+//        String encodedMessage = InternetChecksum.encode(message);
+//        int nbMessageWithIntegrity = 0;
+//        int nbCorruptedMessageCorrectlyDetected = 0;
+//
+//        String corruptedMessage;
+//        for (int i = 0; i < iterations; i++) {
+//            corruptedMessage = SyntheticDataGenerator.corruptWord(encodedMessage, p);
+//            if (encodedMessage.equals(corruptedMessage)) {
+//                nbMessageWithIntegrity++;
+//            } else {
+//                if (InternetChecksum.isCorrupted(corruptedMessage)) {
+//                    nbCorruptedMessageCorrectlyDetected++;
+//                }
+//            }
+//        }
+//        if (iterations - nbMessageWithIntegrity == 0) {
+//            return 1.d;
+//        }
+//        return (double) nbCorruptedMessageCorrectlyDetected / (iterations - nbMessageWithIntegrity);
+//    }
 }

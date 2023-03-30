@@ -1,14 +1,15 @@
 package benchmark.binary.operation;
 
 import benchmark.Constant;
-import java.math.BigInteger;
-import java.util.Arrays;
-import javax.swing.JFrame;
 import math.BigInt;
 import org.math.plot.Plot2DPanel;
 import org.math.plot.PlotPanel;
 import util.BitUtil;
 import util.SyntheticDataGenerator;
+
+import javax.swing.*;
+import java.math.BigInteger;
+import java.util.Arrays;
 
 public class InsertBitAtPosPerformance {
 
@@ -110,14 +111,14 @@ public class InsertBitAtPosPerformance {
 
         //Warmup the jvm
         for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
-            src = new StringBuilder(SyntheticDataGenerator.getRandomWord(10));
+            src = SyntheticDataGenerator.getRandomStringBuilderWord(10);
             BitUtil.insertBit(src, 0, false);
         }
 
         for (int j = 0; j < 100; j++) {
             iterationTime = 0;
             for (int i = 0; i < ITERATIONS; i++) {
-                src = new StringBuilder(SyntheticDataGenerator.getRandomWord(numberOfBits));
+                src = SyntheticDataGenerator.getRandomStringBuilderWord(numberOfBits);
                 startingTime = System.nanoTime();
                 BitUtil.insertBit(src, numberOfBits, false);
                 endingTime = System.nanoTime();

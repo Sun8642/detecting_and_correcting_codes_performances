@@ -1,14 +1,15 @@
 package benchmark.binary.operation;
 
 import benchmark.Constant;
-import java.math.BigInteger;
-import java.util.Arrays;
-import javax.swing.JFrame;
 import math.BigInt;
 import org.math.plot.Plot2DPanel;
 import org.math.plot.PlotPanel;
-import util.StringUtil;
+import util.StringBuilderUtil;
 import util.SyntheticDataGenerator;
+
+import javax.swing.*;
+import java.math.BigInteger;
+import java.util.Arrays;
 
 public class ShiftLeftPerformance {
 
@@ -23,7 +24,7 @@ public class ShiftLeftPerformance {
         plot.setAxisLabels("Number of bits", "Time for " + ITERATIONS + " executions (ms)");
         plot.addLinePlot("BigInt", numberOfBits, shiftLeftBigIntExecutionTimes());
         plot.addLinePlot("BigInteger", numberOfBits, shiftLeftBigIntegerExecutionTimes());
-        plot.addLinePlot("String", numberOfBits, shiftLeftStringBuilderExecutionTimes());
+        plot.addLinePlot("StringBuilder", numberOfBits, shiftLeftStringBuilderExecutionTimes());
         plot.addLegend(PlotPanel.EAST);
 
         JFrame frame = new JFrame("Shift left execution time");
@@ -106,20 +107,20 @@ public class ShiftLeftPerformance {
         long startingTime;
         long endingTime;
         int numberOfBits = 1000;
-        String src = SyntheticDataGenerator.getRandomWord(10);
+        StringBuilder src;
         long iterationTime;
 
         //Warmup the jvm
         for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
-            StringUtil.binaryLeftShift(src, 1);
+            StringBuilderUtil.binaryLeftShift(SyntheticDataGenerator.getRandomStringBuilderWord(10), 1);
         }
 
         for (int j = 0; j < 100; j++) {
             iterationTime = 0;
             for (int i = 0; i < ITERATIONS; i++) {
-                src = SyntheticDataGenerator.getRandomWord(numberOfBits);
+                src = SyntheticDataGenerator.getRandomStringBuilderWord(numberOfBits);
                 startingTime = System.nanoTime();
-                StringUtil.binaryLeftShift(src, SHIFT_LEFT_VALUE);
+                StringBuilderUtil.binaryLeftShift(src, SHIFT_LEFT_VALUE);
                 endingTime = System.nanoTime();
                 iterationTime += endingTime - startingTime;
             }

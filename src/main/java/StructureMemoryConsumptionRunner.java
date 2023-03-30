@@ -1,7 +1,8 @@
-import java.math.BigInteger;
-import java.util.Random;
 import math.BigInt;
 import org.openjdk.jol.info.ClassLayout;
+
+import java.math.BigInteger;
+import java.util.Random;
 
 public class StructureMemoryConsumptionRunner {
 

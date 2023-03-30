@@ -1,20 +1,13 @@
 package benchmark;
 
 import code.CyclicRedundancyCode;
+import math.BigInt;
+import org.openjdk.jmh.annotations.*;
+import util.SyntheticDataGenerator;
+
 import java.math.BigInteger;
 import java.util.SplittableRandom;
 import java.util.concurrent.TimeUnit;
-import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Fork;
-import org.openjdk.jmh.annotations.Measurement;
-import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.annotations.OutputTimeUnit;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.annotations.Warmup;
-import math.BigInt;
-import util.SyntheticDataGenerator;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
@@ -32,6 +25,12 @@ public class CyclicRedundancyCheckBenchmark {
     private final String bigMsg = SyntheticDataGenerator.getRandomWord(1500 * 8);
     private final String crc32 = "100000100110000010001110110110111";
 
+    private final StringBuilder messageStringBuilder = new StringBuilder(message);
+    private final StringBuilder generatorPolynomialStringBuilder = new StringBuilder(generatorPolynomial);
+
+    private final StringBuilder bigMsgStringBuilder = new StringBuilder(bigMsg);
+    private final StringBuilder crc32StringBuilder = new StringBuilder(crc32);
+
     private final BigInteger messageBigInteger = new BigInteger("100100110110", 2);
     private final BigInteger generatorPolynomialBigInteger = new BigInteger("1001", 2);
 
@@ -47,23 +46,23 @@ public class CyclicRedundancyCheckBenchmark {
 //    private final BigInt generatorPolynomialBigInt = new BigInt(Long.parseLong("1001"));
 
     @Benchmark
-    public String encodeString() {
-        return CyclicRedundancyCode.encode(message, generatorPolynomial);
+    public void encodeString() {
+        CyclicRedundancyCode.encode(messageStringBuilder, generatorPolynomialStringBuilder);
     }
 
     @Benchmark
-    public String encodeRandom12BitsString() {
-        return CyclicRedundancyCode.encode(SyntheticDataGenerator.getRandomWord(12), generatorPolynomial);
+    public void encodeRandom12BitsString() {
+        CyclicRedundancyCode.encode(SyntheticDataGenerator.getRandomStringBuilderWord(12), generatorPolynomialStringBuilder);
     }
 
     @Benchmark
-    public String encodeBigMessageString() {
-        return CyclicRedundancyCode.encode(bigMsg, crc32);
+    public void encodeBigMessageString() {
+        CyclicRedundancyCode.encode(bigMsgStringBuilder, crc32StringBuilder);
     }
 
     @Benchmark
-    public String encodeRandom12000BitsString() {
-        return CyclicRedundancyCode.encode(SyntheticDataGenerator.getRandomWord(12000), crc32);
+    public void encodeRandom12000BitsString() {
+        CyclicRedundancyCode.encode(SyntheticDataGenerator.getRandomStringBuilderWord(12000), crc32StringBuilder);
     }
 
     @Benchmark
@@ -72,8 +71,8 @@ public class CyclicRedundancyCheckBenchmark {
     }
 
     @Benchmark
-    public void encodeBigMessageBigInteger() {
-        CyclicRedundancyCode.encode(bigMsgBigInteger, crc32BigInteger);
+    public BigInteger encodeBigMessageBigInteger() {
+        return CyclicRedundancyCode.encode(bigMsgBigInteger, crc32BigInteger);
     }
 
     @Benchmark

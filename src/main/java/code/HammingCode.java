@@ -1,14 +1,13 @@
 package code;
 
-import java.util.BitSet;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import model.HammingResponse;
 import math.BigInt;
+import model.HammingResponse;
 import util.BitUtil;
-import util.SyntheticDataGenerator;
 
 import java.math.BigInteger;
+import java.util.BitSet;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class HammingCode {
@@ -21,13 +20,12 @@ public final class HammingCode {
         return hammingDistance(codeWord, "0");
     }
 
-    public static String encode(String message, boolean parity) {
+    public static void encode(StringBuilder message, boolean parity) {
         int numberOfRedundancyBitsToAdd = numberOfRedundancyBitsToAdd(message.length());
-        StringBuilder encodedMessage = new StringBuilder(message);
 
         //Transform block into coded block with all the redundancy bit initialized at 0 (to have the final positions of non redundancy bits)
         for (int i = 0; i < numberOfRedundancyBitsToAdd; i++) {
-            encodedMessage.insert((int) (encodedMessage.length() - Math.pow(2.d, i)) + 1, '0');
+            message.insert((int) (message.length() - Math.pow(2.d, i)) + 1, '0');
         }
 
         //Replace redundancy bits if needed
@@ -37,8 +35,8 @@ public final class HammingCode {
             int numberOfOneForBitPosition = 0;
 
             //Calculate the number of bit set
-            for (int j = 1; j <= encodedMessage.length(); j++) {
-                if (encodedMessage.charAt(encodedMessage.length() - j) == '1') {
+            for (int j = 1; j <= message.length(); j++) {
+                if (message.charAt(message.length() - j) == '1') {
                     if ((bitPosition & j) != 0) {
                         numberOfOneForBitPosition++;
                     }
@@ -46,12 +44,10 @@ public final class HammingCode {
             }
             if ((parity && numberOfOneForBitPosition % 2 == 1) || (!parity && numberOfOneForBitPosition % 2 == 0)) {
                 //The redundancy bit need to be 1
-                int redundancyBitPositionInCodedMessage = encodedMessage.length() - bitPosition;
-                encodedMessage.replace(redundancyBitPositionInCodedMessage, redundancyBitPositionInCodedMessage + 1, "1");
+                int redundancyBitPositionInCodedMessage = message.length() - bitPosition;
+                message.replace(redundancyBitPositionInCodedMessage, redundancyBitPositionInCodedMessage + 1, "1");
             }
         }
-
-        return encodedMessage.toString();
     }
 
     public static BigInteger encode(BigInteger message, boolean parity, int k) {
@@ -248,34 +244,34 @@ public final class HammingCode {
         return k >= 4 && BitUtil.isPowerOfTwo(k + numberOfRedundancyBitsToAdd(k) + 1);
     }
 
-    public static double[] getErrorDetectionRate(int iterations, double p, int messageBitSize) {
-        String message = SyntheticDataGenerator.getRandomWord(messageBitSize);
-        String encodedMessage = encode(message, true);
-        int nbMessageWithIntegrity = 0;
-        int nbCorruptedMessageCorrectlyDetected = 0;
-        int nbCorruptedMessageCorrectlyCorrected = 0;
-
-        String corruptedMessage;
-        for (int i = 0; i < iterations; i++) {
-            corruptedMessage = SyntheticDataGenerator.corruptWord(encodedMessage, p);
-            if (encodedMessage.equals(corruptedMessage)) {
-                nbMessageWithIntegrity++;
-            } else {
-                HammingResponse hammingResponse = decode(corruptedMessage, true);
-                if (hammingResponse.getDecodedMessage().equals(message)) {
-                    nbCorruptedMessageCorrectlyCorrected++;
-                }
-                if (hammingResponse.isErrorDetected()) {
-                    nbCorruptedMessageCorrectlyDetected++;
-                }
-            }
-        }
-        if (iterations - nbMessageWithIntegrity == 0) {
-            return new double[]{1.d, 1.d};
-        }
-        return new double[]{
-                (double) nbCorruptedMessageCorrectlyDetected / (iterations - nbMessageWithIntegrity),
-                (double) nbCorruptedMessageCorrectlyCorrected / (iterations - nbMessageWithIntegrity)
-        };
-    }
+//    public static double[] getErrorDetectionRate(int iterations, double p, int messageBitSize) {
+//        String message = SyntheticDataGenerator.getRandomWord(messageBitSize);
+//        String encodedMessage = encode(message, true);
+//        int nbMessageWithIntegrity = 0;
+//        int nbCorruptedMessageCorrectlyDetected = 0;
+//        int nbCorruptedMessageCorrectlyCorrected = 0;
+//
+//        String corruptedMessage;
+//        for (int i = 0; i < iterations; i++) {
+//            corruptedMessage = SyntheticDataGenerator.corruptWord(encodedMessage, p);
+//            if (encodedMessage.equals(corruptedMessage)) {
+//                nbMessageWithIntegrity++;
+//            } else {
+//                HammingResponse hammingResponse = decode(corruptedMessage, true);
+//                if (hammingResponse.getDecodedMessage().equals(message)) {
+//                    nbCorruptedMessageCorrectlyCorrected++;
+//                }
+//                if (hammingResponse.isErrorDetected()) {
+//                    nbCorruptedMessageCorrectlyDetected++;
+//                }
+//            }
+//        }
+//        if (iterations - nbMessageWithIntegrity == 0) {
+//            return new double[]{1.d, 1.d};
+//        }
+//        return new double[]{
+//                (double) nbCorruptedMessageCorrectlyDetected / (iterations - nbMessageWithIntegrity),
+//                (double) nbCorruptedMessageCorrectlyCorrected / (iterations - nbMessageWithIntegrity)
+//        };
+//    }
 }

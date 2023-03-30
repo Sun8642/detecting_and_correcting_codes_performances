@@ -1,22 +1,26 @@
 package code;
 
-import java.math.BigInteger;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import math.BigInt;
 import util.BitUtil;
 import util.StringBuilderUtil;
-import util.StringUtil;
-import util.SyntheticDataGenerator;
+
+import java.math.BigInteger;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CyclicRedundancyCode {
 
-    public static String encode(String message, String generatorPolynomial) {
+    public static void encode(StringBuilder message, StringBuilder generatorPolynomial) {
         //Multiply Ps by Xr
-        String encodedMessage = StringUtil.binaryLeftShift(message, generatorPolynomial.length() - 1);
+        int generatorPolynomialDegree = StringBuilderUtil.binaryLeftMostSetBit(generatorPolynomial, generatorPolynomial.length()) - 1;
+        int shift = message.length();
+        StringBuilderUtil.binaryLeftShift(message, generatorPolynomialDegree);
 
-        return message + getPolynomialArithmeticModulo2(encodedMessage, generatorPolynomial);
+        String polynomialArithmeticModulo2 = getPolynomialArithmeticModulo2(message, generatorPolynomial);
+        for (int i = 0; i < polynomialArithmeticModulo2.length(); i++) {
+            message.setCharAt(i + shift, polynomialArithmeticModulo2.charAt(i));
+        }
     }
 
     public static long encode(long message, long generatorPolynomial) {
@@ -36,10 +40,10 @@ public final class CyclicRedundancyCode {
         message.add(getPolynomialArithmeticModulo2(message, generatorPolynomial));
     }
 
-    public static String getPolynomialArithmeticModulo2(String dividend, String divisor) {
+    public static String getPolynomialArithmeticModulo2(StringBuilder dividend, StringBuilder divisor) {
         StringBuilder remainder = new StringBuilder(dividend);
         int remainderLeftMostSetBit = StringBuilderUtil.binaryLeftMostSetBit(remainder, remainder.length());
-        int divisorLeftMostSetBit = StringUtil.binaryLeftMostSetBit(divisor, divisor.length());
+        int divisorLeftMostSetBit = StringBuilderUtil.binaryLeftMostSetBit(divisor, divisor.length());
 
         int i, j;
         while (remainderLeftMostSetBit >= divisorLeftMostSetBit) {
@@ -118,26 +122,26 @@ public final class CyclicRedundancyCode {
         return encodedMessage.substring(0, encodedMessage.length() - (generatorPolynomial.length() - 1));
     }
 
-    public static double getErrorDetectionRate(int iterations, double p, int messageBitSize, String generatorPolynomial) {
-        String message = SyntheticDataGenerator.getRandomWord(messageBitSize);
-        String encodedMessage = encode(message, generatorPolynomial);
-        int nbMessageWithIntegrity = 0;
-        int nbCorruptedMessageCorrectlyDetected = 0;
-
-        String corruptedMessage;
-        for (int i = 0; i < iterations; i++) {
-            corruptedMessage = SyntheticDataGenerator.corruptWord(encodedMessage, p);
-            if (encodedMessage.equals(corruptedMessage)) {
-                nbMessageWithIntegrity++;
-            } else {
-                if (isCorrupted(corruptedMessage, generatorPolynomial)) {
-                    nbCorruptedMessageCorrectlyDetected++;
-                }
-            }
-        }
-        if (iterations - nbMessageWithIntegrity == 0) {
-            return 1.d;
-        }
-        return (double) nbCorruptedMessageCorrectlyDetected / (iterations - nbMessageWithIntegrity);
-    }
+//    public static double getErrorDetectionRate(int iterations, double p, int messageBitSize, String generatorPolynomial) {
+//        String message = SyntheticDataGenerator.getRandomWord(messageBitSize);
+//        String encodedMessage = encode(message, generatorPolynomial);
+//        int nbMessageWithIntegrity = 0;
+//        int nbCorruptedMessageCorrectlyDetected = 0;
+//
+//        String corruptedMessage;
+//        for (int i = 0; i < iterations; i++) {
+//            corruptedMessage = SyntheticDataGenerator.corruptWord(encodedMessage, p);
+//            if (encodedMessage.equals(corruptedMessage)) {
+//                nbMessageWithIntegrity++;
+//            } else {
+//                if (isCorrupted(corruptedMessage, generatorPolynomial)) {
+//                    nbCorruptedMessageCorrectlyDetected++;
+//                }
+//            }
+//        }
+//        if (iterations - nbMessageWithIntegrity == 0) {
+//            return 1.d;
+//        }
+//        return (double) nbCorruptedMessageCorrectlyDetected / (iterations - nbMessageWithIntegrity);
+//    }
 }

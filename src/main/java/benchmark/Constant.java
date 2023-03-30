@@ -1,9 +1,10 @@
 package benchmark;
 
-import java.util.Random;
-import java.util.SplittableRandom;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+
+import java.util.Random;
+import java.util.SplittableRandom;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Constant {

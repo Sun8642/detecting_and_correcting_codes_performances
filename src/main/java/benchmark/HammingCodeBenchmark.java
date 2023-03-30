@@ -1,18 +1,11 @@
 package benchmark;
 
 import code.HammingCode;
+import math.BigInt;
+import org.openjdk.jmh.annotations.*;
+
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
-import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Fork;
-import org.openjdk.jmh.annotations.Measurement;
-import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.annotations.OutputTimeUnit;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.annotations.Warmup;
-import math.BigInt;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
@@ -24,14 +17,13 @@ public class HammingCodeBenchmark {
 
     private final String message = "100100110110";
 
-    private final BigInteger messageBigInteger = new BigInteger("100100110110", 2);
+    private final BigInteger messageBigInteger = new BigInteger(message, 2);
 
-    private final long messageLong = Long.parseLong("100100110110", 2);
-//    private final BigInt messageBigInt = new BigInt(Long.parseLong("100100110110"));
+    private final long messageLong = Long.parseLong(message, 2);
 
     @Benchmark
-    public String encodeString() {
-        return HammingCode.encode(message, true);
+    public void encodeString() {
+        HammingCode.encode(new StringBuilder(message), true);
     }
 
     @Benchmark

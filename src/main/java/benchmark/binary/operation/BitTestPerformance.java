@@ -1,14 +1,15 @@
 package benchmark.binary.operation;
 
 import benchmark.Constant;
-import java.math.BigInteger;
-import java.util.Arrays;
-import javax.swing.JFrame;
 import math.BigInt;
 import org.math.plot.Plot2DPanel;
 import org.math.plot.PlotPanel;
 import util.StringBuilderUtil;
 import util.SyntheticDataGenerator;
+
+import javax.swing.*;
+import java.math.BigInteger;
+import java.util.Arrays;
 
 public class BitTestPerformance {
 
@@ -104,7 +105,7 @@ public class BitTestPerformance {
         long endingTime;
         StringBuilder src;
         int numberOfBits = 1000;
-        src = new StringBuilder(SyntheticDataGenerator.getRandomWord(numberOfBits));
+        src = SyntheticDataGenerator.getRandomStringBuilderWord(numberOfBits);
 
         //Warmup the jvm
         for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
@@ -112,7 +113,7 @@ public class BitTestPerformance {
         }
 
         for (int j = 0; j < 100; j++) {
-            src = new StringBuilder(SyntheticDataGenerator.getRandomWord(numberOfBits));
+            src = SyntheticDataGenerator.getRandomStringBuilderWord(numberOfBits);
 
             startingTime = System.nanoTime();
             for (int i = 0; i < ITERATIONS; i++) {
@@ -122,7 +123,7 @@ public class BitTestPerformance {
             executionTime[j] = ((double) endingTime - startingTime) / Constant.NS_TO_MS;
             numberOfBits += 1000;
         }
-        System.out.println("exec time String : " + Arrays.toString(executionTime));
+        System.out.println("exec time StringBuilder : " + Arrays.toString(executionTime));
         return executionTime;
     }
 }

@@ -1,19 +1,15 @@
-package benchmark.code;
+package benchmark;
 
-import benchmark.Constant;
-import code.CyclicRedundancyCode;
-import math.BigInt;
 import org.math.plot.Plot2DPanel;
 import org.math.plot.PlotPanel;
 import util.SyntheticDataGenerator;
 
 import javax.swing.*;
-import java.math.BigInteger;
 import java.util.Arrays;
 
-public class CrcPerformance {
+public class SyntheticDataGeneratorPerformance {
 
-    private static final int ITERATIONS = 10;
+    private static final int ITERATIONS = 10000;
 
     public static void main(String[] args) {
         double[] numberOfBits = numberOfBits();
@@ -21,12 +17,12 @@ public class CrcPerformance {
         Plot2DPanel plot = new Plot2DPanel();
 
         plot.setAxisLabels("Number of bits", "Time for " + ITERATIONS + " executions (ms)");
-        plot.addLinePlot("BigInt", numberOfBits, crcBigIntExecutionTimes());
-        plot.addLinePlot("BigInteger", numberOfBits, crcBigIntegerExecutionTimes());
-        plot.addLinePlot("StringBuilder", numberOfBits, crcStringExecutionTimes());
+        plot.addLinePlot("BigInt", numberOfBits, generateRandomBigIntExecutionTimes());
+        plot.addLinePlot("BigInteger", numberOfBits, generateRandomBigIntegerExecutionTimes());
+        plot.addLinePlot("StringBuilder", numberOfBits, generateRandomStringBuilderExecutionTimes());
         plot.addLegend(PlotPanel.EAST);
 
-        JFrame frame = new JFrame("Crc execution time");
+        JFrame frame = new JFrame("Generating random number execution time");
         frame.setContentPane(plot);
         frame.setVisible(true);
         frame.setSize(1000, 600);
@@ -42,25 +38,22 @@ public class CrcPerformance {
         return numberOfBitsArray;
     }
 
-    public static double[] crcBigIntExecutionTimes() {
+    public static double[] generateRandomBigIntExecutionTimes() {
         double[] executionTime = new double[100];
         long startingTime;
         long endingTime;
-        BigInt src;
-        BigInt generatorPolynomial = new BigInt(5L);
         int numberOfBits = 1000;
 
         //Warmup the jvm
-        for (int i = 0; i < 10; i++) {
-            CyclicRedundancyCode.encode(new BigInt(10, Constant.SPLITTABLE_RANDOM), generatorPolynomial);
+        for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
+            SyntheticDataGenerator.getBigIntRandomWord(10);
         }
 
         for (int j = 0; j < 100; j++) {
-            src = new BigInt(numberOfBits, Constant.SPLITTABLE_RANDOM);
 
             startingTime = System.nanoTime();
             for (int i = 0; i < ITERATIONS; i++) {
-                CyclicRedundancyCode.encode(src, generatorPolynomial);
+                SyntheticDataGenerator.getBigIntRandomWord(numberOfBits);
             }
             endingTime = System.nanoTime();
             executionTime[j] = ((double) endingTime - startingTime) / Constant.NS_TO_MS;
@@ -70,55 +63,47 @@ public class CrcPerformance {
         return executionTime;
     }
 
-    public static double[] crcBigIntegerExecutionTimes() {
+    public static double[] generateRandomBigIntegerExecutionTimes() {
         double[] executionTime = new double[100];
         long startingTime;
         long endingTime;
-        BigInteger src;
-        BigInteger generatorPolynomial = BigInteger.valueOf(5L);
         int numberOfBits = 1000;
 
-        src = new BigInteger(10, Constant.RANDOM);
-
         //Warmup the jvm
-        for (int i = 0; i < 10; i++) {
-            CyclicRedundancyCode.encode(src, generatorPolynomial);
+        for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
+            SyntheticDataGenerator.getBigIntegerRandomWord(10);
         }
 
         for (int j = 0; j < 100; j++) {
-            src = new BigInteger(numberOfBits, Constant.RANDOM);
 
             startingTime = System.nanoTime();
             for (int i = 0; i < ITERATIONS; i++) {
-                CyclicRedundancyCode.encode(src, generatorPolynomial);
+                SyntheticDataGenerator.getBigIntegerRandomWord(numberOfBits);
             }
             endingTime = System.nanoTime();
             executionTime[j] = ((double) endingTime - startingTime) / Constant.NS_TO_MS;
             numberOfBits += 1000;
         }
-        System.out.println("exec time BigInteger : " + Arrays.toString(executionTime));
+        System.out.println("exec time biginteger : " + Arrays.toString(executionTime));
         return executionTime;
     }
 
-    public static double[] crcStringExecutionTimes() {
+    public static double[] generateRandomStringBuilderExecutionTimes() {
         double[] executionTime = new double[100];
         long startingTime;
         long endingTime;
-        StringBuilder src;
-        StringBuilder generatorPolynomial = new StringBuilder("101");
         int numberOfBits = 1000;
 
         //Warmup the jvm
-        for (int i = 0; i < 10; i++) {
-            CyclicRedundancyCode.encode(SyntheticDataGenerator.getRandomStringBuilderWord(10), generatorPolynomial);
+        for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
+            SyntheticDataGenerator.getRandomStringBuilderWord(10);
         }
 
         for (int j = 0; j < 100; j++) {
-            src = SyntheticDataGenerator.getRandomStringBuilderWord(numberOfBits);
 
             startingTime = System.nanoTime();
             for (int i = 0; i < ITERATIONS; i++) {
-                CyclicRedundancyCode.encode(src, generatorPolynomial);
+                SyntheticDataGenerator.getRandomStringBuilderWord(numberOfBits);
             }
             endingTime = System.nanoTime();
             executionTime[j] = ((double) endingTime - startingTime) / Constant.NS_TO_MS;

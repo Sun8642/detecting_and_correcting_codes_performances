@@ -1,10 +1,10 @@
 package util;
 
-import java.math.BigInteger;
-import java.util.BitSet;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import math.BigInt;
+
+import java.math.BigInteger;
+import java.util.BitSet;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BitUtil {

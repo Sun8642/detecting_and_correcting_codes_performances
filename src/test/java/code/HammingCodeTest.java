@@ -1,13 +1,14 @@
 package code;
 
-import java.math.BigInteger;
-import java.util.BitSet;
+import math.BigInt;
 import model.HammingResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import math.BigInt;
+
+import java.math.BigInteger;
+import java.util.BitSet;
 
 public class HammingCodeTest {
 
@@ -45,8 +46,9 @@ public class HammingCodeTest {
             "01100000100,0110001,true",
             "110011010010,11001010,false"
     })
-    public void encode(String expected, String messageToEncode, boolean parity) {
-        Assertions.assertEquals(expected, HammingCode.encode(messageToEncode, parity));
+    public void encode(String expected, StringBuilder message, boolean parity) {
+        HammingCode.encode(message, parity);
+        Assertions.assertEquals(expected, message.toString());
     }
 
     @ParameterizedTest

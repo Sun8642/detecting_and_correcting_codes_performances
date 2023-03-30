@@ -1,18 +1,11 @@
 package benchmark;
 
+import math.BigInt;
+import org.openjdk.jmh.annotations.*;
+import util.SyntheticDataGenerator;
+
 import java.util.SplittableRandom;
 import java.util.concurrent.TimeUnit;
-import math.BigInt;
-import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Fork;
-import org.openjdk.jmh.annotations.Measurement;
-import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.annotations.OutputTimeUnit;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.State;
-import org.openjdk.jmh.annotations.Warmup;
-import util.SyntheticDataGenerator;
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
