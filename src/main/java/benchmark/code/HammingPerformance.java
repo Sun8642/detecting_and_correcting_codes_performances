@@ -48,6 +48,7 @@ public class HammingPerformance {
         long endingTime;
         BigInt src;
         int numberOfBits = 1000;
+        long iterationTime;
 
         //Warmup the jvm
         for (int i = 0; i < 10; i++) {
@@ -55,14 +56,16 @@ public class HammingPerformance {
         }
 
         for (int j = 0; j < 100; j++) {
-            src = new BigInt(numberOfBits, Constant.SPLITTABLE_RANDOM);
+            iterationTime = 0;
 
-            startingTime = System.nanoTime();
             for (int i = 0; i < ITERATIONS; i++) {
+                src = new BigInt(numberOfBits, Constant.SPLITTABLE_RANDOM);
+                startingTime = System.nanoTime();
                 HammingCode.encode(src, true, numberOfBits);
+                endingTime = System.nanoTime();
+                iterationTime += endingTime - startingTime;
             }
-            endingTime = System.nanoTime();
-            executionTime[j] = ((double) endingTime - startingTime) / Constant.NS_TO_MS;
+            executionTime[j] = ((double) iterationTime) / Constant.NS_TO_MS;
             numberOfBits += 1000;
         }
         System.out.println("exec time BigInt : " + Arrays.toString(executionTime));
@@ -104,6 +107,7 @@ public class HammingPerformance {
         long endingTime;
         StringBuilder src;
         int numberOfBits = 1000;
+        long iterationTime;
 
         //Warmup the jvm
         for (int i = 0; i < 10; i++) {
@@ -111,14 +115,16 @@ public class HammingPerformance {
         }
 
         for (int j = 0; j < 100; j++) {
-            src = SyntheticDataGenerator.getRandomStringBuilderWord(numberOfBits);
+            iterationTime = 0;
 
-            startingTime = System.nanoTime();
             for (int i = 0; i < ITERATIONS; i++) {
+                src = SyntheticDataGenerator.getRandomStringBuilderWord(numberOfBits);
+                startingTime = System.nanoTime();
                 HammingCode.encode(src, true);
+                endingTime = System.nanoTime();
+                iterationTime += endingTime - startingTime;
             }
-            endingTime = System.nanoTime();
-            executionTime[j] = ((double) endingTime - startingTime) / Constant.NS_TO_MS;
+            executionTime[j] = ((double) iterationTime) / Constant.NS_TO_MS;
             numberOfBits += 1000;
         }
         System.out.println("exec time StringBuilder : " + Arrays.toString(executionTime));

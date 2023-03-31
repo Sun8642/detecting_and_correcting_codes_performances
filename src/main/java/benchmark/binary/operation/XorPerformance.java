@@ -55,7 +55,7 @@ public class XorPerformance {
 
         //Warmup the jvm
         for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
-            src.xor(mask);
+            src.xor2(mask);
         }
 
         for (int j = 0; j < 100; j++) {
@@ -90,7 +90,6 @@ public class XorPerformance {
         }
 
         for (int j = 0; j < 100; j++) {
-//            numberOfBits = (int) Math.pow(10.d, j + 1.d);
             src = new BigInteger(numberOfBits, Constant.RANDOM);
             mask = new BigInteger(numberOfBits, Constant.RANDOM);
 

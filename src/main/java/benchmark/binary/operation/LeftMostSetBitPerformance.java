@@ -13,7 +13,7 @@ import java.util.Arrays;
 
 public class LeftMostSetBitPerformance {
 
-    private static final int ITERATIONS = 10000;
+    private static final int ITERATIONS = 100000;
 
     public static void main(String[] args) {
         double[] numberOfBits = numberOfBits();
@@ -85,7 +85,6 @@ public class LeftMostSetBitPerformance {
         }
 
         for (int j = 0; j < 100; j++) {
-//            numberOfBits = (int) Math.pow(10.d, j + 1.d);
             src = new BigInteger(numberOfBits, Constant.RANDOM);
 
             startingTime = System.nanoTime();

@@ -61,7 +61,7 @@ public class InsertBitAtPosPerformance {
             for (int i = 0; i < ITERATIONS; i++) {
                 src = new BigInt(numberOfBits, Constant.SPLITTABLE_RANDOM);
                 startingTime = System.nanoTime();
-                src.insertBit(0, false);
+                src.insertBit(numberOfBits, false);
                 endingTime = System.nanoTime();
                 iterationTime += endingTime - startingTime;
             }
@@ -90,7 +90,7 @@ public class InsertBitAtPosPerformance {
             for (int i = 0; i < ITERATIONS; i++) {
                 src = new BigInteger(numberOfBits, Constant.RANDOM);
                 startingTime = System.nanoTime();
-                BitUtil.insertBit(src, 0, false);
+                BitUtil.insertBit(src, numberOfBits, false);
                 endingTime = System.nanoTime();
                 iterationTime += endingTime - startingTime;
             }
