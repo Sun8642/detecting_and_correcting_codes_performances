@@ -61,27 +61,4 @@ public final class ParityBitCode {
     public static boolean isCorrupted(BigInteger message) {
         return message.bitCount() % 2 != 0;
     }
-
-//    public static double getErrorDetectionRate(int iterations, double p, int messageBitSize) {
-//        String message = SyntheticDataGenerator.getRandomWord(messageBitSize);
-//        String encodedMessage = encode(message);
-//        int nbMessageWithIntegrity = 0;
-//        int nbCorruptedMessageCorrectlyDetected = 0;
-//
-//        String corruptedMessage;
-//        for (int i = 0; i < iterations; i++) {
-//            corruptedMessage = SyntheticDataGenerator.corruptWord(encodedMessage, p);
-//            if (encodedMessage.equals(corruptedMessage)) {
-//                nbMessageWithIntegrity++;
-//            } else {
-//                if (isCorrupted(corruptedMessage)) {
-//                    nbCorruptedMessageCorrectlyDetected++;
-//                }
-//            }
-//        }
-//        if (iterations - nbMessageWithIntegrity == 0) {
-//            return 1.d;
-//        }
-//        return (double) nbCorruptedMessageCorrectlyDetected / (iterations - nbMessageWithIntegrity);
-//    }
 }

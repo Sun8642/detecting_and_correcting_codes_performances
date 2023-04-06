@@ -206,6 +206,28 @@ public class BigInt extends Number implements Comparable<BigInt> {
         }
     }
 
+    public void removeBit(int bitPosition) {
+        BigInt mask = new BigInt(1L);
+        mask.shiftLeft(bitPosition);
+        mask.sub(1);
+        BigInt rightVal = new BigInt(this);
+        rightVal.and(mask);
+
+        clearBit(bitPosition);
+        sub(rightVal);
+        shiftRight(1);
+        add(rightVal);
+    }
+
+    public String toBinaryString() {
+        return new BigInteger(toString()).toString(2);
+    }
+
+    public String toBinaryString(int minLength) {
+        String binaryString = toBinaryString();
+        return binaryString.length() < minLength ? "0".repeat(minLength - binaryString.length()) + binaryString : binaryString;
+    }
+
     /*** <Constructors> ***/
     /**
      * Creates a BigInt from the given parameters.

@@ -15,7 +15,7 @@ public class BigIntTest {
             "100010,10,5,true",
             "10,10,5,false",
     })
-    public void insertBitBigInt(String expected, String binaryBigIntStr, int bitPosition, boolean bitSet) {
+    public void insertBit(String expected, String binaryBigIntStr, int bitPosition, boolean bitSet) {
         BigInt expectedBigInt = new BigInt(Long.parseLong(expected, 2));
         BigInt binaryBigInt = new BigInt(Long.parseLong(binaryBigIntStr, 2));
         binaryBigInt.insertBit(bitPosition, bitSet);

@@ -110,27 +110,4 @@ public final class InternetChecksum {
 
         return new BigInt(result);
     }
-
-//    public static double getErrorDetectionRate(int iterations, double p, int messageBitSize) {
-//        String message = SyntheticDataGenerator.getRandomWord(messageBitSize);
-//        String encodedMessage = InternetChecksum.encode(message);
-//        int nbMessageWithIntegrity = 0;
-//        int nbCorruptedMessageCorrectlyDetected = 0;
-//
-//        String corruptedMessage;
-//        for (int i = 0; i < iterations; i++) {
-//            corruptedMessage = SyntheticDataGenerator.corruptWord(encodedMessage, p);
-//            if (encodedMessage.equals(corruptedMessage)) {
-//                nbMessageWithIntegrity++;
-//            } else {
-//                if (InternetChecksum.isCorrupted(corruptedMessage)) {
-//                    nbCorruptedMessageCorrectlyDetected++;
-//                }
-//            }
-//        }
-//        if (iterations - nbMessageWithIntegrity == 0) {
-//            return 1.d;
-//        }
-//        return (double) nbCorruptedMessageCorrectlyDetected / (iterations - nbMessageWithIntegrity);
-//    }
 }

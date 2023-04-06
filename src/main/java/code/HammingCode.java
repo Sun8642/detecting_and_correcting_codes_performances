@@ -243,35 +243,4 @@ public final class HammingCode {
     public static boolean isKValid(int k) {
         return k >= 4 && BitUtil.isPowerOfTwo(k + numberOfRedundancyBitsToAdd(k) + 1);
     }
-
-//    public static double[] getErrorDetectionRate(int iterations, double p, int messageBitSize) {
-//        String message = SyntheticDataGenerator.getRandomWord(messageBitSize);
-//        String encodedMessage = encode(message, true);
-//        int nbMessageWithIntegrity = 0;
-//        int nbCorruptedMessageCorrectlyDetected = 0;
-//        int nbCorruptedMessageCorrectlyCorrected = 0;
-//
-//        String corruptedMessage;
-//        for (int i = 0; i < iterations; i++) {
-//            corruptedMessage = SyntheticDataGenerator.corruptWord(encodedMessage, p);
-//            if (encodedMessage.equals(corruptedMessage)) {
-//                nbMessageWithIntegrity++;
-//            } else {
-//                HammingResponse hammingResponse = decode(corruptedMessage, true);
-//                if (hammingResponse.getDecodedMessage().equals(message)) {
-//                    nbCorruptedMessageCorrectlyCorrected++;
-//                }
-//                if (hammingResponse.isErrorDetected()) {
-//                    nbCorruptedMessageCorrectlyDetected++;
-//                }
-//            }
-//        }
-//        if (iterations - nbMessageWithIntegrity == 0) {
-//            return new double[]{1.d, 1.d};
-//        }
-//        return new double[]{
-//                (double) nbCorruptedMessageCorrectlyDetected / (iterations - nbMessageWithIntegrity),
-//                (double) nbCorruptedMessageCorrectlyCorrected / (iterations - nbMessageWithIntegrity)
-//        };
-//    }
 }

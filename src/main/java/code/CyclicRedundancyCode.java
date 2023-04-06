@@ -84,7 +84,8 @@ public final class CyclicRedundancyCode {
         return remainder;
     }
 
-    public static BigInt getPolynomialArithmeticModulo2(BigInt dividend, BigInt divisor) {
+    //Way slower than the other method (~4x slower for message length = 100k)
+    public static BigInt getPolynomialArithmeticModulo2Xor(BigInt dividend, BigInt divisor) {
         BigInt remainder = new BigInt(dividend);
         divisor = new BigInt(divisor);
         int remainderLeftMostSetBit = remainder.getLeftMostSetBit();
@@ -105,6 +106,30 @@ public final class CyclicRedundancyCode {
         return remainder;
     }
 
+    public static BigInt getPolynomialArithmeticModulo2(BigInt dividend, BigInt divisor) {
+        BigInt remainder = new BigInt(dividend);
+        int remainderLeftMostSetBit = remainder.getLeftMostSetBit();
+        int divisorLeftMostSetBit = divisor.getLeftMostSetBit();
+
+        int i, remainderBitToModify;
+        while (remainderLeftMostSetBit >= divisorLeftMostSetBit) {
+            i = 0;
+            while (i < divisorLeftMostSetBit) {
+                if (divisor.testBit(divisorLeftMostSetBit - 1 - i)) {
+                    remainderBitToModify = remainderLeftMostSetBit - 1 - i;
+                    if (remainder.testBit(remainderBitToModify)) {
+                        remainder.clearBit(remainderBitToModify);
+                    } else {
+                        remainder.setBit(remainderBitToModify);
+                    }
+                }
+                i++;
+            }
+            remainderLeftMostSetBit = remainder.getLeftMostSetBit();
+        }
+        return remainder;
+    }
+
     public static boolean isCorrupted(String encodedMessage, String generatorPolynomial) {
         int encodedMessageInt = Integer.parseInt(encodedMessage, 2);
         int generatorPolynomialInt = Integer.parseInt(generatorPolynomial, 2);
@@ -121,27 +146,4 @@ public final class CyclicRedundancyCode {
         }
         return encodedMessage.substring(0, encodedMessage.length() - (generatorPolynomial.length() - 1));
     }
-
-//    public static double getErrorDetectionRate(int iterations, double p, int messageBitSize, String generatorPolynomial) {
-//        String message = SyntheticDataGenerator.getRandomWord(messageBitSize);
-//        String encodedMessage = encode(message, generatorPolynomial);
-//        int nbMessageWithIntegrity = 0;
-//        int nbCorruptedMessageCorrectlyDetected = 0;
-//
-//        String corruptedMessage;
-//        for (int i = 0; i < iterations; i++) {
-//            corruptedMessage = SyntheticDataGenerator.corruptWord(encodedMessage, p);
-//            if (encodedMessage.equals(corruptedMessage)) {
-//                nbMessageWithIntegrity++;
-//            } else {
-//                if (isCorrupted(corruptedMessage, generatorPolynomial)) {
-//                    nbCorruptedMessageCorrectlyDetected++;
-//                }
-//            }
-//        }
-//        if (iterations - nbMessageWithIntegrity == 0) {
-//            return 1.d;
-//        }
-//        return (double) nbCorruptedMessageCorrectlyDetected / (iterations - nbMessageWithIntegrity);
-//    }
 }
