@@ -13,7 +13,7 @@ import java.util.Arrays;
 
 public class BitTestPerformance {
 
-    private static final int ITERATIONS = 1000000;
+    private static final int ITERATIONS = 10000000;
 
     public static void main(String[] args) {
         double[] numberOfBits = numberOfBits();
@@ -52,16 +52,18 @@ public class BitTestPerformance {
         src = new BigInt(numberOfBits, Constant.SPLITTABLE_RANDOM);
 
         //Warmup the jvm
-        for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
+        for (int i = 0; i < 10000000; i++) {
             src.testBit(numberOfBits);
         }
 
+        //Needed to avoid JVM not executing the testBit method
+        boolean[] srcs = new boolean[ITERATIONS];
         for (int j = 0; j < 100; j++) {
             src = new BigInt(numberOfBits, Constant.SPLITTABLE_RANDOM);
 
             startingTime = System.nanoTime();
             for (int i = 0; i < ITERATIONS; i++) {
-                src.testBit(1);
+                srcs[i] = src.testBit(numberOfBits);
             }
             endingTime = System.nanoTime();
             executionTime[j] = ((double) endingTime - startingTime) / Constant.NS_TO_MS;
@@ -80,16 +82,18 @@ public class BitTestPerformance {
         src = new BigInteger(numberOfBits, Constant.RANDOM);
 
         //Warmup the jvm
-        for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
+        for (int i = 0; i < 10000000; i++) {
             src.testBit(numberOfBits);
         }
 
+        //Needed to avoid JVM not executing the testBit method
+        boolean[] srcs = new boolean[ITERATIONS];
         for (int j = 0; j < 100; j++) {
             src = new BigInteger(numberOfBits, Constant.RANDOM);
 
             startingTime = System.nanoTime();
             for (int i = 0; i < ITERATIONS; i++) {
-                src.testBit(1);
+                srcs[i] = src.testBit(numberOfBits);
             }
             endingTime = System.nanoTime();
             executionTime[j] = ((double) endingTime - startingTime) / Constant.NS_TO_MS;
@@ -108,16 +112,18 @@ public class BitTestPerformance {
         src = SyntheticDataGenerator.getRandomStringBuilderWord(numberOfBits);
 
         //Warmup the jvm
-        for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
+        for (int i = 0; i < 10000000; i++) {
             StringBuilderUtil.binaryTestBit(src, numberOfBits);
         }
 
+        //Needed to avoid JVM not executing the testBit method
+        boolean[] srcs = new boolean[ITERATIONS];
         for (int j = 0; j < 100; j++) {
             src = SyntheticDataGenerator.getRandomStringBuilderWord(numberOfBits);
 
             startingTime = System.nanoTime();
             for (int i = 0; i < ITERATIONS; i++) {
-                StringBuilderUtil.binaryTestBit(src, 1);
+                srcs[i] = StringBuilderUtil.binaryTestBit(src, 1);
             }
             endingTime = System.nanoTime();
             executionTime[j] = ((double) endingTime - startingTime) / Constant.NS_TO_MS;
