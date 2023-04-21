@@ -54,4 +54,10 @@ public final class StringBuilderUtil {
         //This is not safe if bitIndex is too high
         return binaryString.charAt(binaryString.length() - bitIndex) == '1';
     }
+
+    public static void binaryFlipBit(StringBuilder binaryString, int bitIndex) {
+        //This is not safe if bitIndex is too high
+        int byteArrayIndex = binaryString.length() - bitIndex;
+        binaryString.setCharAt(byteArrayIndex, binaryString.charAt(byteArrayIndex) == '0' ? '1' : '0');
+    }
 }

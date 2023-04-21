@@ -11,7 +11,7 @@ import javax.swing.*;
 import java.math.BigInteger;
 import java.util.Arrays;
 
-public class ShiftLeftPerformance {
+public class ShiftLeft16bitsPerformance {
 
     private static final int SHIFT_LEFT_VALUE = 16;
     private static final int ITERATIONS = 1000;

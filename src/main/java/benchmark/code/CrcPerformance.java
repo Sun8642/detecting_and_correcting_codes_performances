@@ -14,6 +14,10 @@ import java.util.Arrays;
 public class CrcPerformance {
 
     private static final int ITERATIONS = 10;
+    private static final String crc32 = "100000100110000010001110110110111";
+    private static final StringBuilder crc32StringBuilder = new StringBuilder(crc32);
+    private static final BigInteger crc32BigInteger = new BigInteger("100000100110000010001110110110111", 2);
+    private static final BigInt crc32BigInt = BigInt.from(crc32BigInteger);
 
     public static void main(String[] args) {
         double[] numberOfBits = numberOfBits();
@@ -53,7 +57,7 @@ public class CrcPerformance {
 
         //Warmup the jvm
         for (int i = 0; i < 10; i++) {
-            CyclicRedundancyCode.encode(new BigInt(10, Constant.SPLITTABLE_RANDOM), generatorPolynomial);
+            CyclicRedundancyCode.encode(new BigInt(10, Constant.SPLITTABLE_RANDOM), crc32BigInt);
         }
 
         for (int j = 0; j < 100; j++) {
@@ -62,7 +66,7 @@ public class CrcPerformance {
             for (int i = 0; i < ITERATIONS; i++) {
                 src = new BigInt(numberOfBits, Constant.SPLITTABLE_RANDOM);
                 startingTime = System.nanoTime();
-                CyclicRedundancyCode.encode(src, generatorPolynomial);
+                CyclicRedundancyCode.encode(src, crc32BigInt);
                 endingTime = System.nanoTime();
                 iterationTime += endingTime - startingTime;
             }
@@ -85,7 +89,7 @@ public class CrcPerformance {
 
         //Warmup the jvm
         for (int i = 0; i < 10; i++) {
-            CyclicRedundancyCode.encode(src, generatorPolynomial);
+            CyclicRedundancyCode.encode(src, crc32BigInteger);
         }
 
         for (int j = 0; j < 100; j++) {
@@ -93,7 +97,7 @@ public class CrcPerformance {
 
             startingTime = System.nanoTime();
             for (int i = 0; i < ITERATIONS; i++) {
-                CyclicRedundancyCode.encode(src, generatorPolynomial);
+                CyclicRedundancyCode.encode(src, crc32BigInteger);
             }
             endingTime = System.nanoTime();
             executionTime[j] = ((double) endingTime - startingTime) / Constant.NS_TO_MS;
@@ -114,7 +118,7 @@ public class CrcPerformance {
 
         //Warmup the jvm
         for (int i = 0; i < 10; i++) {
-            CyclicRedundancyCode.encode(SyntheticDataGenerator.getRandomStringBuilderWord(10), generatorPolynomial);
+            CyclicRedundancyCode.encode(SyntheticDataGenerator.getRandomStringBuilderWord(10), crc32StringBuilder);
         }
 
         for (int j = 0; j < 100; j++) {
@@ -123,7 +127,7 @@ public class CrcPerformance {
             for (int i = 0; i < ITERATIONS; i++) {
                 src = SyntheticDataGenerator.getRandomStringBuilderWord(numberOfBits);
                 startingTime = System.nanoTime();
-                CyclicRedundancyCode.encode(src, generatorPolynomial);
+                CyclicRedundancyCode.encode(src, crc32StringBuilder);
                 endingTime = System.nanoTime();
                 iterationTime += endingTime - startingTime;
             }
