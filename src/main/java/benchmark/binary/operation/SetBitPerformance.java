@@ -51,7 +51,7 @@ public class SetBitPerformance {
         src = new BigInt(numberOfBits, Constant.SPLITTABLE_RANDOM);
 
         //Warmup the jvm
-        for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
+        for (int i = 0; i < 500000; i++) {
             src.setBit(numberOfBits);
         }
 
@@ -82,7 +82,7 @@ public class SetBitPerformance {
         src = new BigInteger(numberOfBits, Constant.RANDOM);
 
         //Warmup the jvm
-        for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
+        for (int i = 0; i < 500000; i++) {
             src.setBit(numberOfBits);
         }
 
@@ -110,7 +110,7 @@ public class SetBitPerformance {
         src = SyntheticDataGenerator.getRandomStringBuilderWord(numberOfBits);
 
         //Warmup the jvm
-        for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
+        for (int i = 0; i < 500000; i++) {
             src.setCharAt(numberOfBits - 1, '1');
         }
 
