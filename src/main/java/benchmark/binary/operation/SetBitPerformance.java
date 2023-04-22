@@ -1,18 +1,16 @@
-
 package benchmark.binary.operation;
 
 import benchmark.Constant;
 import math.BigInt;
 import org.math.plot.Plot2DPanel;
 import org.math.plot.PlotPanel;
-import util.StringBuilderUtil;
 import util.SyntheticDataGenerator;
 
 import javax.swing.*;
 import java.math.BigInteger;
 import java.util.Arrays;
 
-public class FlipBitPerformance {
+public class SetBitPerformance {
 
     private static final int ITERATIONS = 10000;
 
@@ -22,12 +20,12 @@ public class FlipBitPerformance {
         Plot2DPanel plot = new Plot2DPanel();
 
         plot.setAxisLabels("Number of bits", "Time for " + ITERATIONS + " executions (ms)");
-        plot.addLinePlot("BigInt", numberOfBits, flipBitBigIntExecutionTimes());
-//        plot.addLinePlot("BigInteger", numberOfBits, flipBitBigIntegerExecutionTimes());
-        plot.addLinePlot("StringBuilder", numberOfBits, flipBitStringBuilderExecutionTimes());
+        plot.addLinePlot("BigInt", numberOfBits, setBitBigIntExecutionTimes());
+        plot.addLinePlot("BigInteger", numberOfBits, setBitBigIntegerExecutionTimes());
+        plot.addLinePlot("StringBuilder", numberOfBits, setBitStringBuilderExecutionTimes());
         plot.addLegend(PlotPanel.EAST);
 
-        JFrame frame = new JFrame("Flip bit execution time");
+        JFrame frame = new JFrame("BitTest execution time");
         frame.setContentPane(plot);
         frame.setVisible(true);
         frame.setSize(1000, 600);
@@ -43,7 +41,7 @@ public class FlipBitPerformance {
         return numberOfBitsArray;
     }
 
-    public static double[] flipBitBigIntExecutionTimes() {
+    public static double[] setBitBigIntExecutionTimes() {
         double[] executionTime = new double[100];
         long startingTime;
         long endingTime;
@@ -53,16 +51,19 @@ public class FlipBitPerformance {
         src = new BigInt(numberOfBits, Constant.SPLITTABLE_RANDOM);
 
         //Warmup the jvm
-        for (int i = 0; i < 500000; i++) {
-            src.flipBit(numberOfBits);
+        for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
+            src.setBit(numberOfBits);
         }
 
+        //Needed to avoid JVM not executing the testBit method
+        BigInt[] srcs = new BigInt[ITERATIONS];
         for (int j = 0; j < 100; j++) {
             src = new BigInt(numberOfBits, Constant.SPLITTABLE_RANDOM);
 
             startingTime = System.nanoTime();
             for (int i = 0; i < ITERATIONS; i++) {
-                src.flipBit(numberOfBits);
+                src.setBit(numberOfBits);
+                srcs[i] = src;
             }
             endingTime = System.nanoTime();
             executionTime[j] = ((double) endingTime - startingTime) / Constant.NS_TO_MS;
@@ -72,7 +73,7 @@ public class FlipBitPerformance {
         return executionTime;
     }
 
-    public static double[] flipBitBigIntegerExecutionTimes() {
+    public static double[] setBitBigIntegerExecutionTimes() {
         double[] executionTime = new double[100];
         long startingTime;
         long endingTime;
@@ -81,8 +82,8 @@ public class FlipBitPerformance {
         src = new BigInteger(numberOfBits, Constant.RANDOM);
 
         //Warmup the jvm
-        for (int i = 0; i < 500000; i++) {
-            src.flipBit(numberOfBits);
+        for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
+            src.setBit(numberOfBits);
         }
 
         for (int j = 0; j < 100; j++) {
@@ -90,7 +91,7 @@ public class FlipBitPerformance {
 
             startingTime = System.nanoTime();
             for (int i = 0; i < ITERATIONS; i++) {
-                src.flipBit(numberOfBits);
+                src.setBit(numberOfBits);
             }
             endingTime = System.nanoTime();
             executionTime[j] = ((double) endingTime - startingTime) / Constant.NS_TO_MS;
@@ -100,7 +101,7 @@ public class FlipBitPerformance {
         return executionTime;
     }
 
-    public static double[] flipBitStringBuilderExecutionTimes() {
+    public static double[] setBitStringBuilderExecutionTimes() {
         double[] executionTime = new double[100];
         long startingTime;
         long endingTime;
@@ -109,20 +110,21 @@ public class FlipBitPerformance {
         src = SyntheticDataGenerator.getRandomStringBuilderWord(numberOfBits);
 
         //Warmup the jvm
-        for (int i = 0; i < 500000; i++) {
-            StringBuilderUtil.binaryFlipBit(src, 1);
+        for (int i = 0; i < Constant.WARMUP_ITERATIONS; i++) {
+            src.setCharAt(numberOfBits - 1, '1');
         }
 
-        StringBuilder[] stringBuilders = new StringBuilder[ITERATIONS];
+        //Needed to avoid JVM not executing the testBit method
+        StringBuilder[] srcs = new StringBuilder[ITERATIONS];
         for (int j = 0; j < 100; j++) {
             src = SyntheticDataGenerator.getRandomStringBuilderWord(numberOfBits);
 
             startingTime = System.nanoTime();
             for (int i = 0; i < ITERATIONS; i++) {
-                StringBuilderUtil.binaryFlipBit(src, 1);
+                src.setCharAt(numberOfBits - 1, '1');
+                srcs[i] = src;
             }
             endingTime = System.nanoTime();
-            stringBuilders[j] = src;
             executionTime[j] = ((double) endingTime - startingTime) / Constant.NS_TO_MS;
             numberOfBits += 1000;
         }
