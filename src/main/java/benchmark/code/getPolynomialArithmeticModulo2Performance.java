@@ -22,7 +22,7 @@ public class getPolynomialArithmeticModulo2Performance {
 
         plot.setAxisLabels("Number of bits", "Time for " + ITERATIONS + " executions (ms)");
         plot.addLinePlot("BigInt", numberOfBits, getPolynomialArithmeticModulo2BigIntExecutionTimes());
-//        plot.addLinePlot("BigInteger", numberOfBits, getPolynomialArithmeticModulo2BigIntegerExecutionTimes());
+        plot.addLinePlot("BigInteger", numberOfBits, getPolynomialArithmeticModulo2BigIntegerExecutionTimes());
         plot.addLinePlot("StringBuilder", numberOfBits, getPolynomialArithmeticModulo2StringExecutionTimes());
         plot.addLegend(PlotPanel.EAST);
 

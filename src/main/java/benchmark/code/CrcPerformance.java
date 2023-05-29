@@ -51,7 +51,6 @@ public class CrcPerformance {
         long startingTime;
         long endingTime;
         BigInt src;
-        BigInt generatorPolynomial = new BigInt(5L);
         int numberOfBits = 1000;
         long iterationTime;
 
@@ -82,7 +81,6 @@ public class CrcPerformance {
         long startingTime;
         long endingTime;
         BigInteger src;
-        BigInteger generatorPolynomial = BigInteger.valueOf(5L);
         int numberOfBits = 1000;
 
         src = new BigInteger(10, Constant.RANDOM);
@@ -112,7 +110,6 @@ public class CrcPerformance {
         long startingTime;
         long endingTime;
         StringBuilder src;
-        StringBuilder generatorPolynomial = new StringBuilder("101");
         int numberOfBits = 1000;
         long iterationTime;
 

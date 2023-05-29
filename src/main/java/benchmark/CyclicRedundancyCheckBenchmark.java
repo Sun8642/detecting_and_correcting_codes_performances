@@ -2,7 +2,15 @@ package benchmark;
 
 import code.CyclicRedundancyCode;
 import math.BigInt;
-import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Fork;
+import org.openjdk.jmh.annotations.Measurement;
+import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.OutputTimeUnit;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.Warmup;
 import util.SyntheticDataGenerator;
 
 import java.math.BigInteger;
@@ -42,8 +50,6 @@ public class CyclicRedundancyCheckBenchmark {
 
     private final BigInt bigMsgBigInt = BigInt.from(bigMsgBigInteger);
     private final BigInt crc32BigInt = new BigInt(Long.parseLong("100000100110000010001110110110111", 2));
-//    private final BigInt messageBigInt = new BigInt(Long.parseLong("100100110110"));
-//    private final BigInt generatorPolynomialBigInt = new BigInt(Long.parseLong("1001"));
 
     @Benchmark
     public void encodeString() {
